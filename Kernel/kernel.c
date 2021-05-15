@@ -3,6 +3,10 @@
 #include <lib.h>
 #include <moduleLoader.h>
 #include <naiveConsole.h>
+// Interrupts
+#include <keyboard.h>
+#include <time.h>
+#include <idtLoader.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -99,6 +103,33 @@ int main()
 	ncPrint((char*)sampleDataModuleAddress);
 	ncNewline();
 
+	load_idt();
+
+	uint8_t changeDetected = 0;
+
+	while(1) {
+		
+		char letter[] = {0, 0};
+		letter[0] = getInput();
+		if (letter[0] >= 0)
+			ncPrint(letter);
+	
+		// if(!changeDetected && ticks_elapsed() % 6 == 0) {
+		// 	changeDetected = 1;
+		// 	ncPrint("6");
+		// 	ncPrintDec(getInput());
+		// 	if (ticks_elapsed() % 18 == 0) {
+		// 		ncPrint("T");
+		// 	}
+		// }
+		// if (changeDetected && ticks_elapsed() % 6 != 0) {
+		// 	changeDetected = 0;
+		// }
+	}
+
+
 	ncPrint("[Finished]");
+
+
 	return 0;
 }

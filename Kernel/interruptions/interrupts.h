@@ -10,6 +10,8 @@
 
 #include <idtLoader.h>
 
+unsigned char getKey(void);
+
 void _irq00Handler(void);
 void _irq01Handler(void);
 void _irq02Handler(void);
