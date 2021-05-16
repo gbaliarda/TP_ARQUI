@@ -12,8 +12,6 @@ syscallHandler:
   call loadSysNum
   pop rdi
   call syscallDispatcher
-	; cmp rax, 1
-  ; 	je callPutChar
 	popState
 	iretq            ; ret especifico para volver de interrupciones    
 

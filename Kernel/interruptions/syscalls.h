@@ -3,6 +3,6 @@
 
 void syscallHandler();
 
-void putChar(char c);
+int64_t write(uint64_t fd, const char* buf, uint64_t count);
 
 #endif
