@@ -8,6 +8,7 @@
         "defs.h": "c",
         "idtloader.h": "c",
         "interrupts.h": "c",
-        "syscalls.h": "c"
+        "syscalls.h": "c",
+        "keyboard.h": "c"
     }
 }

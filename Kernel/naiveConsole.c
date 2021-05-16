@@ -18,8 +18,12 @@ void ncPrint(const char * string)
 
 void ncPrintChar(char character)
 {
-	*currentVideo = character;
-	currentVideo += 2;
+	if (character == '\n')
+		ncNewline();
+	else {
+		*currentVideo = character;
+		currentVideo += 2;
+	}	
 }
 
 void ncNewline()
@@ -59,6 +63,15 @@ void ncClear()
 	for (i = 0; i < height * width; i++)
 		video[i * 2] = ' ';
 	currentVideo = video;
+}
+
+int ncBackspace(){
+	if(currentVideo >= video + 2){
+		*(--currentVideo) = 0x07;
+		*(--currentVideo) = 0;
+		return 1;
+	}
+	return 0;
 }
 
 static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)

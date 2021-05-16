@@ -1,12 +1,12 @@
 GLOBAL sys_write
-GLOBAL getColor
+GLOBAL sys_read
 
 section .text
 
-getColor:
-  mov rax, 74h
+sys_read:
+  mov rax, 0
+  int 80h
   ret
-
 sys_write:
   mov rax, 1
   int 80h

@@ -90,53 +90,30 @@ int main()
 	// Cargamos la IDT
 	load_idt();
 
-	ncPrint("[Kernel Main]");
-	ncNewline();
-	ncPrint("  Sample code module at 0x");
-	ncPrintHex((uint64_t)sampleCodeModuleAddress);
-	ncNewline();
-	ncPrint("  Calling the sample code module returned: ");
+	ncClear();
 
-	// Se llama a sampleCodeModule.c en Userland
-	ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
+	// ncPrint("[Kernel Main]");
+	// ncNewline();
+	// ncPrint("  Sample code module at 0x");
+	// ncPrintHex((uint64_t)sampleCodeModuleAddress);
+	// ncNewline();
+	// ncPrint("  Calling the sample code module returned: ");
 
-	ncNewline();
-	ncNewline();
+	// // Se llama a sampleCodeModule.c en Userland
+	// ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
 
-	ncPrint("  Sample data module at 0x");
-	ncPrintHex((uint64_t)sampleDataModuleAddress);
-	ncNewline();
-	ncPrint("  Sample data module contents: ");
-	ncPrint((char*)sampleDataModuleAddress);
-	ncNewline();
+	// ncNewline();
+	// ncNewline();
 
+	// ncPrint("  Sample data module at 0x");
+	// ncPrintHex((uint64_t)sampleDataModuleAddress);
+	// ncNewline();
+	// ncPrint("  Sample data module contents: ");
+	// ncPrint((char*)sampleDataModuleAddress);
+	// ncNewline();
+	// ncPrint("[Finished]");
 
-	uint8_t changeDetected = 0;
-
-	while(1) {
-
-		_hlt();
-		unsigned char letter[] = {0, 0};
-		letter[0] = getInput();
-		if (letter[0] > 0)
-			ncPrint(letter);
-	
-		// if(!changeDetected && ticks_elapsed() % 6 == 0) {
-		// 	changeDetected = 1;
-		// 	ncPrint("6");
-		// 	ncPrintDec(getInput());
-		// 	if (ticks_elapsed() % 18 == 0) {
-		// 		ncPrint("T");
-		// 	}
-		// }
-		// if (changeDetected && ticks_elapsed() % 6 != 0) {
-		// 	changeDetected = 0;
-		// }
-	}
-
-
-	ncPrint("[Finished]");
-
+	((EntryPoint)sampleCodeModuleAddress)();
 
 	return 0;
 }

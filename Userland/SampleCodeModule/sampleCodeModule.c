@@ -1,27 +1,21 @@
-/* sampleCodeModule.c */
-
-char * v = (char*)0xB8000 + 79 * 2;
-
-static int var1 = 0;
-static int var2 = 0;
-
 void sys_write(unsigned int fd, const char *buffer, unsigned int count);
-int getColor();
-
+int sys_read(char *buffer);
 
 int main() {
-	//All the following code may be removed 
-	*v = 'X';
-	int color = getColor();
-	*(v+1) = color;
-	// *(v+1) = 0x74;
 
-	sys_write(1, "Hello World", 10);
+	sys_write(1, "Welcome to the Shell\n", 21);
+	sys_write(1, "Chau\n", 5);
 
-	//Test if BSS is properly set up
-	if (var1 == 0 && var2 == 0)
-		return 0xDEADC0DE;
+	char buffer[100];
+	int charsRead;
 
+	while (1) {
+		
+		charsRead = sys_read(buffer);
+		sys_write(1, "\nLeidos con exito los caracteres\n", 32);
+
+	}
+	
 	return 0xDEADBEEF;
 
 	// while (1)
