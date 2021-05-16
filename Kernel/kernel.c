@@ -5,6 +5,7 @@
 #include <naiveConsole.h>
 // Interrupts
 #include <keyboard.h>
+#include <interrupts.h>
 #include <time.h>
 #include <idtLoader.h>
 
@@ -108,7 +109,8 @@ int main()
 	uint8_t changeDetected = 0;
 
 	while(1) {
-		
+
+		_hlt();
 		unsigned char letter[] = {0, 0};
 		letter[0] = getInput();
 		if (letter[0] > 0)

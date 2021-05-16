@@ -6,6 +6,8 @@
         "string.h": "c",
         "stdint.h": "c",
         "defs.h": "c",
-        "idtloader.h": "c"
+        "idtloader.h": "c",
+        "interrupts.h": "c",
+        "syscalls.h": "c"
     }
 }

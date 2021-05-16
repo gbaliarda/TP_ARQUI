@@ -1,5 +1,5 @@
 #include <keyboard.h>
-#include <interrupts.h>
+// #include <interrupts.h>
 
 #define BUFFER_SIZE 64
 

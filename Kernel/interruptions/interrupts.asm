@@ -15,16 +15,11 @@ GLOBAL _irq05Handler
 
 GLOBAL _exception0Handler
 
-GLOBAL getKey
-
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
 
 SECTION .text
 
-getKey:
-    in al, 60h			; lee el output register
-    ret
 
 %macro pushState 0
 	push rax
