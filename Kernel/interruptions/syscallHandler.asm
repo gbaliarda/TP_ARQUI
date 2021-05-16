@@ -1,16 +1,21 @@
 GLOBAL syscallHandler
-EXTERN putChar
+EXTERN loadSysNum
+EXTERN syscallDispatcher
 
 SECTION .text
 
 ; en rax viene el numero de syscall a ejecutar
 syscallHandler:
 	pushState
-	cmp rax, 1
-  je putChar
+  push rdi
+  mov rdi, rax
+  call loadSysNum
+  pop rdi
+  call syscallDispatcher
+	; cmp rax, 1
+  ; 	je callPutChar
 	popState
-	iretq
-
+	iretq            ; ret especifico para volver de interrupciones    
 
 %macro pushState 0
 	push rax
