@@ -3,6 +3,5 @@
 
 void keyboard_handler();
 char getInput();
-int getCurrent();
 
 #endif

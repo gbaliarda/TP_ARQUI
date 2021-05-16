@@ -15,21 +15,20 @@ static int current = 0;
 static int currentKey = 0;
 int keysToRead = 0;
 
-int getCurrent(){
-    return current;
-}
-
-// El scan code de release es negativo
 void keyboard_handler() {
     if (current == BUFFER_SIZE)
       current = 0;
-    buffer[current++] = ASCIITable[getKey()];
-    keysToRead++;
+    unsigned char key = getKey();
+    // Guardamos solo las letras que tenemos en la tabla, el resto las ignoramos
+    if (key < 58) {
+      buffer[current++] = ASCIITable[getKey()];
+      keysToRead++;
+    }
 }
 
 char getInput() {
   if (keysToRead == 0)
-    return -1;
+    return 0;
   if (currentKey == BUFFER_SIZE)
       currentKey = 0;
   keysToRead--;

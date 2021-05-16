@@ -109,9 +109,9 @@ int main()
 
 	while(1) {
 		
-		char letter[] = {0, 0};
+		unsigned char letter[] = {0, 0};
 		letter[0] = getInput();
-		if (letter[0] >= 0)
+		if (letter[0] > 0)
 			ncPrint(letter);
 	
 		// if(!changeDetected && ticks_elapsed() % 6 == 0) {
