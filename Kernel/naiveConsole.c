@@ -15,7 +15,7 @@ void ncPrint(const char * string)
 	for (i = 0; string[i] != 0; i++)
 		ncPrintChar(string[i]);
 }
-
+// Funcion hecha por nosotros 
 void ncPrintChar(char character)
 {
 	if (character == '\n')
@@ -48,6 +48,18 @@ void ncPrintHex(uint64_t value)
 void ncPrintBin(uint64_t value)
 {
 	ncPrintBase(value, 2);
+}
+
+// Hace el dump de un registro
+void ncPrintReg(const char *regName, uint64_t regValue)
+{
+	ncPrint(regName);
+	ncPrint(": ");
+	int digits = uintToBase(regValue, buffer, 16);
+	for (int i = 1; i < 16 - digits; i++)
+		ncPrint("0");
+	ncPrint(buffer);
+	ncNewline();
 }
 
 void ncPrintBase(uint64_t value, uint32_t base)

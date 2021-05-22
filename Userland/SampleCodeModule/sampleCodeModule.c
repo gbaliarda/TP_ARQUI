@@ -1,21 +1,31 @@
-void sys_write(unsigned int fd, const char *buffer, unsigned int count);
-int sys_read(char *buffer);
+#include "libc.h"
 
 int main() {
 
-	sys_write(1, "Welcome to the Shell\n", 21);
-	sys_write(1, "Chau\n", 5);
+	printf("Welcome to the Shell\n\n");
 
-	char buffer[100];
+	char buffer[101];
 	int charsRead;
 
 	while (1) {
 		
-		charsRead = sys_read(buffer);
-		sys_write(1, "\nLeidos con exito los caracteres\n", 32);
+		printf("> ");
+		// charsRead = scanf(buffer);
+		// printf("\nLeidos con exito los caracteres: ");
+		// printf(buffer);
+		// putChar('\n');
+		// printInt(charsRead);
+		// putChar('\n');
+		// printf("Ingrese un caracter: ");
+		// getChar(buffer);
+		// putChar('\n');
+		// printf("Char leido: ");
+		// printf(buffer);
+		// putChar('\n');
+		printInt(1 / 0);
 
 	}
-	
+									
 	return 0xDEADBEEF;
 
 	// while (1)

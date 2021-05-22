@@ -9,6 +9,7 @@
         "idtloader.h": "c",
         "interrupts.h": "c",
         "syscalls.h": "c",
-        "keyboard.h": "c"
+        "keyboard.h": "c",
+        "cstdint": "c"
     }
 }

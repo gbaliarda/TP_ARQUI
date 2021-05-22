@@ -14,16 +14,18 @@ int64_t write(uint64_t fd, const char* buf, uint64_t count) {
   }
 }
 
-int read(char* buf) 
+int read(char* buf, int limit) 
 {
   int count = 0;
-  while (1)
+  while (1 && (count < limit || limit == -1))
   {
 		_hlt();
 		char key = getInput();
 		if (key > 0) {
-      if (key == '\n')
+      if (key == '\n'){
+        buf[count] = 0; // Termina en 0
         return count;
+      }
       // Backspace
       else if (key == 8) {
         if (ncBackspace())
@@ -38,4 +40,6 @@ int read(char* buf)
       }
     }
 	}
+  buf[count] = 0; // Termina en 0
+  return count;
 }

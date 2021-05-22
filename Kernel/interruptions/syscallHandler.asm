@@ -16,7 +16,7 @@ syscallHandler:
 	iretq            ; ret especifico para volver de interrupciones    
 
 %macro pushState 0
-	push rax
+	; push rax 			 ; no pusheamos rax porque se usa luego para retornar en la syscall
 	push rbx
 	push rcx
 	push rdx
@@ -48,5 +48,5 @@ syscallHandler:
 	pop rdx
 	pop rcx
 	pop rbx
-	pop rax
+	; pop rax
 %endmacro

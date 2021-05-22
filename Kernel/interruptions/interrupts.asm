@@ -4,6 +4,7 @@ GLOBAL _sti
 GLOBAL picMasterMask
 GLOBAL picSlaveMask
 GLOBAL haltcpu
+EXTERN ncPrintReg
 GLOBAL _hlt
 
 GLOBAL _irq00Handler
@@ -59,6 +60,7 @@ SECTION .text
 
 %macro irqHandlerMaster 1
 	pushState
+	cli ; linea agregada para que no se puede interrumpir las interrupciones de hardware. Para atender de a una interrupcion a la vez.
 
 	mov rdi, %1 ; pasaje de parametro
 	call irqDispatcher
@@ -67,6 +69,7 @@ SECTION .text
 	mov al, 20h
 	out 20h, al
 
+	sti ; linea agregada para deshabilitar que no se pueda interrumpir las interrupciones de hardware
 	popState
 	iretq
 %endmacro
@@ -75,14 +78,91 @@ SECTION .text
 
 %macro exceptionHandler 1
 	pushState
-
 	mov rdi, %1 ; pasaje de parametro
 	call exceptionDispatcher
-
-	popState
-	iretq
+	call dumpRegs
+	call haltcpu ; cortamos la ejecucion del sistema operativo. En este punto, hay que reiniciarlo.
+	; popState
+	; iretq
 %endmacro
 
+dumpRegs:
+	
+	push rdi
+	push rsi
+
+	push rdi
+	lea rdi, [regsNames+4*1]
+	call ncPrintReg
+	pop rdi
+	
+	mov rsi, rdi
+	lea rdi, [regsNames]
+	call ncPrintReg
+
+	mov rsi, rax
+	lea rdi, [regsNames+4*2]
+	call ncPrintReg
+
+	mov rsi, rbx
+	lea rdi, [regsNames+4*3]
+	call ncPrintReg
+	
+	mov rsi, rcx
+	lea rdi, [regsNames+4*4]
+	call ncPrintReg
+
+	mov rsi, rdx
+	lea rdi, [regsNames+4*5]
+	call ncPrintReg
+
+	mov rsi, r8
+	lea rdi, [regsNames+4*6]
+	call ncPrintReg
+
+	mov rsi, r9
+	lea rdi, [regsNames+4*7]
+	call ncPrintReg
+	
+	mov rsi, r10
+	lea rdi, [regsNames+4*8]
+	call ncPrintReg
+	
+	mov rsi, r11
+	lea rdi, [regsNames+4*9]
+	call ncPrintReg
+
+	mov rsi, r12
+	lea rdi, [regsNames+4*10]
+	call ncPrintReg
+
+	mov rsi, r13
+	lea rdi, [regsNames+4*11]
+	call ncPrintReg
+
+	mov rsi, r14
+	lea rdi, [regsNames+4*12]
+	call ncPrintReg
+
+	mov rsi, r15
+	lea rdi, [regsNames+4*13]
+	call ncPrintReg
+
+	lea rsi, [rsp+8]
+	lea rdi, [regsNames+4*15]
+	call ncPrintReg
+
+	mov rsi, rbp
+	lea rdi, [regsNames+4*16]
+	call ncPrintReg
+
+	mov rsi, $ ; Carga el valor de la direccion donde esta el mov (seria el IP) en rsi. El $ avanza en 1 con cada opcode (cada opcode ocupa 1 direccion de 1 byte).
+	lea rdi, [regsNames+4*14]
+	call ncPrintReg
+
+	pop rsi
+	pop rdi
+	ret
 
 _hlt:
 	sti
@@ -149,7 +229,9 @@ haltcpu:
 	hlt
 	ret
 
+section .rodata
+	; dd = 4 byte value. Hacemos un "array" donde cada posicion es de 4 bytes (cada caracter ocupa 1 byte, de esta forma todos terminan en 0)
+	regsNames dd "rdi", "rsi", "rax", "rbx", "rcx", "rdx", "r8 ", "r9 ", "r10", "r11", "r12", "r13", "r14", "r15", "rip", "rsp", "rbp" ; 17 registros
 
-
-SECTION .bss
+section .bss
 	aux resq 1
