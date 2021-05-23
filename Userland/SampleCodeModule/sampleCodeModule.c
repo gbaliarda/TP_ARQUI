@@ -1,5 +1,23 @@
 #include "libc.h"
 
+void executeCommand(char * buffer){
+	int index = 0;
+	char command[21];
+	while(index < 20 && buffer[index] && buffer[index] != ' '){
+		command[index] = buffer[index];
+		index++;
+	}
+	command[index] = 0;
+	if(compareStrings(command, "inforeg")){
+		sys_inforeg();
+	} else if(compareStrings(command, "help")){
+		printf("-------COMMANDS------\n");
+		printf("1: help\n");
+		printf("2: inforeg\n");
+	}
+	
+}
+
 int main() {
 
 	printf("Welcome to the Shell\n\n");
@@ -9,20 +27,12 @@ int main() {
 
 	while (1) {
 		
+		//printInt(1 / 0);
+		
 		printf("> ");
-		// charsRead = scanf(buffer);
-		// printf("\nLeidos con exito los caracteres: ");
-		// printf(buffer);
-		// putChar('\n');
-		// printInt(charsRead);
-		// putChar('\n');
-		// printf("Ingrese un caracter: ");
-		// getChar(buffer);
-		// putChar('\n');
-		// printf("Char leido: ");
-		// printf(buffer);
-		// putChar('\n');
-		printInt(1 / 0);
+		charsRead = scanf(buffer);
+		executeCommand(buffer);
+		
 
 	}
 									
@@ -35,3 +45,4 @@ int main() {
 	// 	executeCommand();
 	// }
 }
+

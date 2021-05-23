@@ -8,16 +8,33 @@ static uint8_t * currentVideo = (uint8_t*)0xB8000;
 static const uint32_t width = 80;
 static const uint32_t height = 25 ;
 
+void scrollDown()
+{
+	if (((currentVideo - video) / (width*2)) < height - 1)
+		return;
+
+	uint16_t * videoChars = video;
+
+	int from = 0, to = width, finish = width * height;
+	while (to < finish)
+		videoChars[from++] = videoChars[to++];
+
+	while (from < finish)
+		videoChars[from++] = 0x0720;
+
+	currentVideo -= width * 2;
+}
+
 void ncPrint(const char * string)
 {
 	int i;
-
 	for (i = 0; string[i] != 0; i++)
 		ncPrintChar(string[i]);
 }
 // Funcion hecha por nosotros 
 void ncPrintChar(char character)
 {
+	scrollDown();
 	if (character == '\n')
 		ncNewline();
 	else {

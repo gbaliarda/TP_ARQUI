@@ -23,6 +23,7 @@ int read(char* buf, int limit)
 		char key = getInput();
 		if (key > 0) {
       if (key == '\n'){
+        ncNewline();
         buf[count] = 0; // Termina en 0
         return count;
       }
@@ -42,4 +43,8 @@ int read(char* buf, int limit)
 	}
   buf[count] = 0; // Termina en 0
   return count;
+}
+
+void inforeg() {
+  dumpRegs();
 }

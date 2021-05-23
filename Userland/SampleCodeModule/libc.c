@@ -91,3 +91,17 @@ void printInt(int num) {
   int digits = uintToBase(num, buffer, 10);
   sys_write(1, buffer, digits);
 }
+
+int compareStrings(char *str1, char *str2){
+  int index = 0;
+  
+  while(str1[index] && str2[index]){
+    if(str1[index] != str2[index])
+      return 0;
+    index++;
+  }
+  
+  if(str1[index] || str2[index]) //Si no tiene la misma long
+    return 0;
+  return 1;
+}

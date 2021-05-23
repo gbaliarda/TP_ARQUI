@@ -33,6 +33,7 @@ void load_idt() {
   // Rutina syscalls (int 80h)
   setup_IDT_entry (0x80, (uint64_t)&syscallHandler);
   setup_IDT_entry (0x00, (uint64_t)&_exception0Handler);
+  setup_IDT_entry (0x06, (uint64_t)&_exception6Handler);
 
 
 	// interrupcion timer tick y keyboard habilitadas

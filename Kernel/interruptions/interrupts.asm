@@ -5,6 +5,7 @@ GLOBAL picMasterMask
 GLOBAL picSlaveMask
 GLOBAL haltcpu
 EXTERN ncPrintReg
+GLOBAL dumpRegs
 GLOBAL _hlt
 
 GLOBAL _irq00Handler
@@ -15,6 +16,7 @@ GLOBAL _irq04Handler
 GLOBAL _irq05Handler
 
 GLOBAL _exception0Handler
+GLOBAL _exception6Handler
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
@@ -81,87 +83,39 @@ SECTION .text
 	mov rdi, %1 ; pasaje de parametro
 	call exceptionDispatcher
 	call dumpRegs
+	popState
+	pop rax ; rip esta arriba del stack 
+	printReg rax, 14 ; imprime el IP de donde se produjo la exception
+	push rax
 	call haltcpu ; cortamos la ejecucion del sistema operativo. En este punto, hay que reiniciarlo.
-	; popState
 	; iretq
 %endmacro
 
+%macro printReg 2
+	mov rsi, %1
+	lea rdi, [regsNames + 4 * %2]
+	call ncPrintReg
+%endmacro
+
 dumpRegs:
-	
 	push rdi
-	push rsi
-
-	push rdi
-	lea rdi, [regsNames+4*1]
-	call ncPrintReg
+	printReg rsi, 1
 	pop rdi
-	
-	mov rsi, rdi
-	lea rdi, [regsNames]
-	call ncPrintReg
-
-	mov rsi, rax
-	lea rdi, [regsNames+4*2]
-	call ncPrintReg
-
-	mov rsi, rbx
-	lea rdi, [regsNames+4*3]
-	call ncPrintReg
-	
-	mov rsi, rcx
-	lea rdi, [regsNames+4*4]
-	call ncPrintReg
-
-	mov rsi, rdx
-	lea rdi, [regsNames+4*5]
-	call ncPrintReg
-
-	mov rsi, r8
-	lea rdi, [regsNames+4*6]
-	call ncPrintReg
-
-	mov rsi, r9
-	lea rdi, [regsNames+4*7]
-	call ncPrintReg
-	
-	mov rsi, r10
-	lea rdi, [regsNames+4*8]
-	call ncPrintReg
-	
-	mov rsi, r11
-	lea rdi, [regsNames+4*9]
-	call ncPrintReg
-
-	mov rsi, r12
-	lea rdi, [regsNames+4*10]
-	call ncPrintReg
-
-	mov rsi, r13
-	lea rdi, [regsNames+4*11]
-	call ncPrintReg
-
-	mov rsi, r14
-	lea rdi, [regsNames+4*12]
-	call ncPrintReg
-
-	mov rsi, r15
-	lea rdi, [regsNames+4*13]
-	call ncPrintReg
-
-	lea rsi, [rsp+8]
-	lea rdi, [regsNames+4*15]
-	call ncPrintReg
-
-	mov rsi, rbp
-	lea rdi, [regsNames+4*16]
-	call ncPrintReg
-
-	mov rsi, $ ; Carga el valor de la direccion donde esta el mov (seria el IP) en rsi. El $ avanza en 1 con cada opcode (cada opcode ocupa 1 direccion de 1 byte).
-	lea rdi, [regsNames+4*14]
-	call ncPrintReg
-
-	pop rsi
-	pop rdi
+	printReg rdi, 0
+	printReg rax, 2
+	printReg rbx, 3
+	printReg rcx, 4
+	printReg rdx, 5
+	printReg r8, 6
+	printReg r9, 7
+	printReg r10, 8
+	printReg r11, 9
+	printReg r12, 10
+	printReg r13, 11
+	printReg r14, 12
+	printReg r15, 13
+	printReg rsp, 15
+	printReg rbp, 16
 	ret
 
 _hlt:
@@ -223,6 +177,10 @@ _irq05Handler:
 ;Zero Division Exception
 _exception0Handler:
 	exceptionHandler 0
+
+;Opcode Exception
+_exception6Handler:
+	exceptionHandler 6
 
 haltcpu:
 	cli
