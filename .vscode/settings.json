@@ -10,6 +10,7 @@
         "interrupts.h": "c",
         "syscalls.h": "c",
         "keyboard.h": "c",
-        "cstdint": "c"
+        "cstdint": "c",
+        "random": "c"
     }
 }

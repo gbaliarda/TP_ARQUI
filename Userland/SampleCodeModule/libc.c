@@ -1,6 +1,8 @@
 typedef unsigned int uint32_t;
 typedef unsigned long long uint64_t;
 
+#define ULONG_MAX 18446744073709551615
+
 void sys_write(unsigned int fd, const char *buffer, unsigned int count);
 int sys_read(char *buffer, int limit);
 
@@ -85,8 +87,7 @@ static uint32_t uintToBase(uint64_t value, char *buffer, uint32_t base)
 	return digits;
 }
 
-
-void printInt(int num) {
+void printInt(unsigned int num) {
   char buffer[10];
   int digits = uintToBase(num, buffer, 10);
   sys_write(1, buffer, digits);
@@ -104,4 +105,20 @@ int compareStrings(char *str1, char *str2){
   if(str1[index] || str2[index]) //Si no tiene la misma long
     return 0;
   return 1;
+}
+
+//[0, +18,446,744,073,709,551,615]
+uint64_t atoi(char *str){
+  uint64_t num = 0;
+  
+  for (int i = 0; str[i]; ++i) {
+    if(str[i] < '0' || str[i] > '9')
+      return -1;
+    else {
+      if(num > ULONG_MAX / 10)
+        return -1;
+      num = num * 10 + str[i] - '0';
+    }
+  }
+  return num;
 }

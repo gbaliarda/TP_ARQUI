@@ -1,6 +1,7 @@
 #include "../include/naiveConsole.h"
 #include "keyboard.h"
 #include "interrupts.h"
+#include "syscalls.h"
 
 int64_t write(uint64_t fd, const char* buf, uint64_t count) {
   switch (fd) {
@@ -47,4 +48,17 @@ int read(char* buf, int limit)
 
 void inforeg() {
   dumpRegs();
+}
+
+void printmem(uint64_t pointer) {
+  uint8_t *arr = (uint8_t*) pointer;
+  for (int i = 0; i < 32; i++){
+    ncPrintHex(arr[i]);
+    ncPrint(" ");
+  }
+  ncNewline();
+}
+
+void getDateTime(Time *dayTime) {
+  getTimeRTC(dayTime);
 }
