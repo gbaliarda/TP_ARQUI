@@ -12,7 +12,7 @@ void executeCommand(char * buffer) {
 
 	// Comando demasiado largo, no se encuentra
 	if (index == 20 && buffer[index] != ' ') {
-		printf("Command not found");
+		printf("Command not found\n");
 		return;
 	}
 
@@ -51,14 +51,18 @@ void executeCommand(char * buffer) {
 		printf("4: printDateTime\n");
 		printf("5: zeroException\n");
 		printf("6: opcodeException\n");
+		printf("7: clear\n");
 	} 
 	else if (compareStrings(command, "inforeg"))
 		sys_inforeg();
 	else if (compareStrings(command, "printmem")) {
-		uint64_t pointer = atoi(args[0]);
-		if(pointer != -1)
+		int ok = 1;
+		uint64_t pointer = hex2int(args[0], &ok);
+		if(ok)
 			sys_printmem(pointer);
-	} else if (compareStrings(command, "printdatetime")) {
+		else
+			printf("Invalid address\n");
+	} else if (compareStrings(command, "printDateTime")) {
 		Time dateTime;
 		sys_getDateTime(&dateTime);
 		printInt(dateTime.day);
@@ -73,10 +77,12 @@ void executeCommand(char * buffer) {
 		putChar(':');
 		printInt(dateTime.seconds);
 		putChar('\n');
-	} else if (compareStrings(command, "zeroexception"))
+	} else if (compareStrings(command, "zeroException"))
 		printInt(1/0);
-	else if (compareStrings(command, "opcodeexception"))
+	else if (compareStrings(command, "opcodeException"))
 		throwInvalidOpcode();
+	else if (compareStrings(command, "clear"))
+		sys_clearScreen();
 	else
 		printf("Command not found\n");
 	
@@ -91,22 +97,12 @@ int main() {
 
 	while (1) {
 		
-		//printInt(1 / 0);
-		
 		printf("> ");
 		charsRead = scanf(buffer);
 		executeCommand(buffer);
-		
 
 	}
 									
 	return 0xDEADBEEF;
-
-	// while (1)
-	// {
-	// 	scanf();		// kernel espera con _hlt hasta un enter
-	// 	parseCommand();
-	// 	executeCommand();
-	// }
 }
 

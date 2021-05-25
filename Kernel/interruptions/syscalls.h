@@ -22,4 +22,6 @@ void printmem(uint64_t pointer);
 
 void getDateTime(Time *dayTime);
 
+void clearScreen();
+
 #endif

@@ -2,8 +2,9 @@ GLOBAL sys_write
 GLOBAL sys_read
 GLOBAL sys_inforeg
 GLOBAL sys_printmem
-
 GLOBAL sys_getDateTime
+GLOBAL sys_clearScreen
+
 section .text
 
 sys_read:
@@ -27,5 +28,10 @@ sys_printmem:
 
 sys_getDateTime:
   mov rax, 12
+  int 80h
+  ret
+
+sys_clearScreen:
+  mov rax, 13
   int 80h
   ret

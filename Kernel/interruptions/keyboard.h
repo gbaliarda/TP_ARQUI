@@ -2,7 +2,7 @@
 #define _KEYBOARD_H_
 
 void keyboard_handler();
-char getInput();
+unsigned char getInput();
 unsigned char getKey(void);
 
 #endif

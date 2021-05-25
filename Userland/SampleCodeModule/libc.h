@@ -27,6 +27,10 @@ void sys_printmem(uint64_t pointer);
 
 void sys_getDateTime(Time *dateTime);
 
-uint64_t atoi(char *str);
+uint64_t atoi(char *str, int *ok);
+
+uint64_t hex2int(char *hex, int *ok);
 
 void throwInvalidOpcode();
+
+void sys_clearScreen();

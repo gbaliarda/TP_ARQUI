@@ -84,7 +84,6 @@ BCDtoDec:
 	mov al, dl		 ; guardo el resultado final en al para retornar
 	ret
 
-; 0 segundos 2 minutos 4 hora 7 dia 8 mes 9 anio 
 %macro getData 1
 	add rdi, 4
 	push rdi
@@ -100,26 +99,11 @@ getTimeRTC:
 	sub rdi, 4 ; 
 
 	getData 4 ; horas
-	getData 2 ; minutos		; ANDA
+	getData 2 ; minutos
 	getData 0 ; segundos
-	getData 7 ; dia				; ANDA
+	getData 7 ; dia
 	getData 8 ; mes
 	getData 9 ; año
-
-; 	mov eax, [rdi]
-; 	add eax, esi
-; 	cmp eax, 23
-; 	jg  _newDay
-; 	cmp eax, 0
-; 	jl 	_prevDay
-; 	jmp _end
-; _newDay:    
-; 	sub eax, 24
-; 	jmp _end
-; _prevDay:    
-; 	add eax, 24
-; 	jmp _end
-; _end:        
-; 	mov [rdi], eax
+	
 	leave
 	ret

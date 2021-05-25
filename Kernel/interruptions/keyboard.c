@@ -4,10 +4,15 @@
 #define BUFFER_SIZE 64
 
 static const unsigned char ASCIITable[] = {
-     0,   27,  '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '\'', 0xA8, 8,  
+     0,   27,  '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '\'', 0, 8,  
      9, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 0,  '+', '\n', 0,
-    'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '{', 0xB3, 0,  '}',
-    'z', 'x', 'c', 'v', 'b', 'n', 'm', ',','.', '-',  0, '*', 0,  ' '
+    'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '{', 0, 14,  '}', // 14 es shift izquierdo pressed
+    'z', 'x', 'c', 'v', 'b', 'n', 'm', ',','.', '-',  15, '*', 0,  ' ', 11, 0, // 15 Shift derecho pressed, 11 bloq mayus
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0xAA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xB6 // 0xAA y 0xB6 shift izquierdo y derecho release
 };
 
 // static unsigned char buffer[BUFFER_SIZE];
@@ -42,12 +47,12 @@ static unsigned char actualKey;
 void keyboard_handler() {
     unsigned char key = getKey();
     // Guardamos solo las letras que tenemos en la tabla, el resto las ignoramos
-    if (key < 58)
+    if (key < 183)
       actualKey = ASCIITable[key];
 }
 
 // Retorna la key y la destruye
-char getInput() {
+unsigned char getInput() {
   if (!actualKey)
     return 0;
   char aux = actualKey;

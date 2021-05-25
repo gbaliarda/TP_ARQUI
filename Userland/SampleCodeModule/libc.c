@@ -1,6 +1,4 @@
-typedef unsigned int uint32_t;
-typedef unsigned long long uint64_t;
-
+#include "libc.h"
 #define ULONG_MAX 18446744073709551615
 
 void sys_write(unsigned int fd, const char *buffer, unsigned int count);
@@ -107,18 +105,54 @@ int compareStrings(char *str1, char *str2){
   return 1;
 }
 
+/**
+ * hex2int
+ * take a hex string and convert it to a 32bit number (max 8 hex digits)
+ */
+uint64_t hex2int(char *hex, int *ok) {
+    uint64_t val = 0;
+    while (*hex) {
+        // Checkeamos si se pasa de una direccion de memoria de 64 bits
+        if(val > ULONG_MAX / 10) {
+          *ok = 0;
+          return 0;
+        }
+        // get current character then increment
+        uint8_t byte = *hex++;
+        
+        if (!(byte >= '0' && byte <= '9') && !(byte >= 'a' && byte <= 'f') && !(byte >= 'A' && byte <= 'F')) {
+          *ok = 0;
+          return 0;
+        }
+        // transform hex character to the 4bit equivalent number, using the ascii table indexes
+        if (byte >= '0' && byte <= '9') byte = byte - '0';
+        else if (byte >= 'a' && byte <='f') byte = byte - 'a' + 10;
+        else if (byte >= 'A' && byte <='F') byte = byte - 'A' + 10;    
+        // shift 4 to make space for new digit, and add the 4 bits of the new digit 
+        val = (val << 4) | (byte & 0xF);
+    }
+    return val;
+}
+
+
 //[0, +18,446,744,073,709,551,615]
-uint64_t atoi(char *str){
+uint64_t atoi(char *str, int *ok){
   uint64_t num = 0;
   
   for (int i = 0; str[i]; ++i) {
-    if(str[i] < '0' || str[i] > '9')
-      return -1;
+    if(str[i] < '0' || str[i] > '9') {
+      *ok = 0;
+      return 0;
+    }
     else {
-      if(num > ULONG_MAX / 10)
-        return -1;
+      if(num > ULONG_MAX / 10) {
+        *ok = 0;
+        return 0;
+      }
       num = num * 10 + str[i] - '0';
     }
   }
+
   return num;
 }
+

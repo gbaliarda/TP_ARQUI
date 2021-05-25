@@ -24,6 +24,9 @@ int64_t syscallDispatcher(int64_t arg0, int64_t arg1, int64_t arg2)
     case 12:
         getDateTime((Time *)arg0);
         return 1;
+    case 13:
+        clearScreen();
+        return 1;
 
     default:
       return -1; 
