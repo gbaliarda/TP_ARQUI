@@ -1,5 +1,4 @@
 #include <keyboard.h>
-#include "../include/naiveConsole.h"
 
 #define BUFFER_SIZE 64
 

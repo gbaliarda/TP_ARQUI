@@ -122,7 +122,7 @@ int main()
 	// ncNewline();
 	// ncPrint("[Finished]");
 	divideConsoles();
-
+	initializeShells();
 	((EntryPoint)sampleCodeModuleAddress)();
 
 	return 0;

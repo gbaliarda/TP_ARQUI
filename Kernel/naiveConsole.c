@@ -4,13 +4,31 @@ static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 
 static char buffer[64] = { '0' };
 static uint8_t * const video = (uint8_t*)0xB8000;
-static uint8_t * currentVideo = (uint8_t*)0xB8000;
 static const uint32_t width = 80;
 static const uint32_t height = 25;
+static uint8_t * currentVideo = (uint8_t*)0xB8000;
+// Cada consola tendra espacio para 39 caracteres (los 2 restantes son pipes que separan ambas)
+static uint8_t * currentLeftVideo = (uint8_t*)0xB8000;
+static uint8_t * currentRightVideo = (uint8_t*) (0xB8000 + 82);
 
 static char consoleInUse = 0; // 0 = left, 1 = right
 
+void initializeShells(){
+	*currentLeftVideo = '>';
+	*currentRightVideo = '>';
+	currentLeftVideo += 4;
+	currentRightVideo += 4;
+	currentVideo += 4;
+}
+
 void changeConsole() {
+	if(consoleInUse) {
+		currentRightVideo = currentVideo;
+		currentVideo = currentLeftVideo;
+	} else {
+		currentLeftVideo = currentVideo;
+		currentVideo = currentRightVideo;
+	}
 	consoleInUse = !consoleInUse;
 }
 
@@ -30,14 +48,31 @@ void divideConsoles(){
 
 void scrollDown()
 {
-	if (((currentVideo - video) / (width*2)) < height - 1)
+	if (((currentVideo - video) / (width*2)) < height)
 		return;
 
 	uint16_t * videoChars = video;
 
-	int from = 0, to = width, finish = width * height;
-	while (to < finish)
+	int from, to, finish, charsCopied = 0;
+
+	if (consoleInUse) {
+		from = width / 2 + 1;
+		to = width / 2 + 1 + width;
+		finish = width * height;
+	}
+	else {
+		from = 0;
+		to = width;
+		finish = width * height - (width / 2 + 1);
+	}
+	while (to < finish) {
+		charsCopied++;
 		videoChars[from++] = videoChars[to++];
+		if (charsCopied % 39 == 0) {
+			from += width / 2 + 1;
+			to += width / 2 + 1;
+		}
+	}
 
 	while (from < finish)
 		videoChars[from++] = 0x0720;
@@ -51,7 +86,7 @@ void ncPrint(const char * string)
 	for (i = 0; string[i] != 0; i++)
 		ncPrintChar(string[i]);
 }
-// Funcion hecha por nosotros 
+
 void ncPrintChar(char character)
 {
 	scrollDown();
@@ -61,15 +96,32 @@ void ncPrintChar(char character)
 		*currentVideo = character;
 		currentVideo += 2;
 	}	
+
+	// Luego de imprimir el ultimo caracter de la derecha, vuelve al inicio de la consola de la derecha
+	if(consoleInUse && (currentVideo - video) % (width*2) == 0)  //Caso right
+		currentVideo += width+2;
+	// Luego de imprimir el ultimo caracter de la izquierda, vuelve al inicio de la consola de la izquierda
+	else if(!consoleInUse && (currentVideo - video) % (width*2) == 78) //caso left 
+		currentVideo += width+2;
+	
 }
 
 void ncNewline()
 {
-	do
-	{
-		ncPrintChar(' ');
+	if (consoleInUse) {
+		// Imprime espacios hasta que llega al primer caracter de la consola derecha
+		do {
+			ncPrintChar(' ');
+		}
+		while((uint64_t)(currentVideo - video) % (width) != 2);
+	} 
+	else {
+		// Imprime espacios hasta que llega al primer caracter de la consola izquierda
+		do {
+			ncPrintChar(' ');
+		}
+		while((uint64_t)(currentVideo - video) % (width*2) != 0);
 	}
-	while((uint64_t)(currentVideo - video) % (width * 2) != 0);
 }
 
 void ncPrintDec(uint64_t value)

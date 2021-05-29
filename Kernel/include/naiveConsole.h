@@ -16,5 +16,6 @@ void ncPrintReg(const char *regName, uint64_t regValue);
 void changeConsole();
 char getConsoleInUse(); 
 void divideConsoles();
+void initializeShells();
 
 #endif

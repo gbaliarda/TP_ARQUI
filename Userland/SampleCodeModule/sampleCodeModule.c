@@ -98,20 +98,21 @@ void executeCommand(char * buffer) {
 int main() {
 	
 	Buffers buffers; //Puntero de tipo buffersStruct 
-	printf("Welcome to the Shell\n\n");
 
 	char *buffer;
 	buffer = buffers->bufferLeft;
 	int charsRead;
-	int changed = 0;
+	int changed = 1;
 
 	while (1) {
 		
-		printf("> ");
+		if (!changed)
+			printf("> ");
+		else
+			changed = 0;
 		charsRead = scanf(buffer, &changed);
 
 		if (changed) {
-			changed = 0;
 			if (buffer == buffers->bufferLeft)
 				buffer = buffers->bufferRight;
 			else
