@@ -21,6 +21,13 @@ static const uint64_t PageSize = 0x1000;
 static void * const sampleCodeModuleAddress = (void*)0x400000;
 static void * const sampleDataModuleAddress = (void*)0x500000;
 
+typedef struct consoleStackPointers {
+	void * leftConsoleStackAddress;
+	void * rightConsoleStackAddress;
+} consoleStackPointers;
+
+static consoleStackPointers * const consoleSP;
+
 typedef int (*EntryPoint)();
 
 
@@ -87,6 +94,8 @@ void * initializeKernelBinary()
 
 int main()
 {	
+	consoleSP->leftConsoleStackAddress = (void*)0x1000000;
+	consoleSP->rightConsoleStackAddress = (void*)0x2000000;
 	// Cargamos la IDT
 	load_idt();
 
@@ -112,6 +121,7 @@ int main()
 	// ncPrint((char*)sampleDataModuleAddress);
 	// ncNewline();
 	// ncPrint("[Finished]");
+	divideConsoles();
 
 	((EntryPoint)sampleCodeModuleAddress)();
 

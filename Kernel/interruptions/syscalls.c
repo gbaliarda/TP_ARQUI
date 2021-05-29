@@ -4,6 +4,7 @@
 #include "syscalls.h"
 
 int mayus = 0;
+int countLeft = 0, countRight = 0;
 
 int64_t write(uint64_t fd, const char* buf, uint64_t count) {
   switch (fd) {
@@ -17,17 +18,24 @@ int64_t write(uint64_t fd, const char* buf, uint64_t count) {
   }
 }
 
-int read(char* buf, int limit) 
+int read(char* buf, int limit, int *changed) 
 {
-  int count = 0;
+  char console = getConsoleInUse(); // 0 = left, 1 = right
+  int count = console ? countRight : countLeft;
+
   while (1 && (count < limit || limit == -1))
   {
 		_hlt();
 		unsigned char key = getInput();
 		if (key == 0)
       continue;
-    if (key == '\n') {
+    // Enter
+    else if (key == '\n') {
       ncNewline();
+      if (console) 
+        countRight = 0;
+      else
+        countLeft = 0;
       buf[count] = 0; // Termina en 0
       return count;
     }
@@ -35,6 +43,16 @@ int read(char* buf, int limit)
     else if (key == 8) {
       if (count > 0 && ncBackspace())
         count--;
+    }
+    // Tab - cambio de consolas. Por default right 
+    else if (key == 9) {
+      *changed = 1;
+      if (console)
+        countRight = count;
+      else
+        countLeft = count;
+      changeConsole();
+      return count;
     }
     // Bloq Mayus
     else if (key == 11) {

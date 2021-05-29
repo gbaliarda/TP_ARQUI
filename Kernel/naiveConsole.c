@@ -6,7 +6,27 @@ static char buffer[64] = { '0' };
 static uint8_t * const video = (uint8_t*)0xB8000;
 static uint8_t * currentVideo = (uint8_t*)0xB8000;
 static const uint32_t width = 80;
-static const uint32_t height = 25 ;
+static const uint32_t height = 25;
+
+static char consoleInUse = 0; // 0 = left, 1 = right
+
+void changeConsole() {
+	consoleInUse = !consoleInUse;
+}
+
+char getConsoleInUse() {
+	return consoleInUse;
+}
+//Separo la pantalla con | en el medio 
+void divideConsoles(){
+	uint8_t * auxVideo = video+width-2;
+	for(int i = 0; i < height; i++){
+		*auxVideo = '|';
+		auxVideo += 2;
+		*auxVideo = '|';
+		auxVideo += width*2-2;
+	}
+}
 
 void scrollDown()
 {

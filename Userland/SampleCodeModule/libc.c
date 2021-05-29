@@ -1,9 +1,6 @@
 #include "libc.h"
 #define ULONG_MAX 18446744073709551615
 
-void sys_write(unsigned int fd, const char *buffer, unsigned int count);
-int sys_read(char *buffer, int limit);
-
 static int strlen(const char *str) {
   int len = 0;
   while (str[len] != 0)
@@ -19,12 +16,12 @@ void putChar(char c) {
   sys_write(1, &c, 1);
 }
 
-int scanf(char *buffer) {
-  return sys_read(buffer, -1);
+int scanf(char *buffer, int *changed) {
+  return sys_read(buffer, -1, changed);
 }
 
-int getChar(char *buffer) {
-  return sys_read(buffer, 1);
+int getChar(char *buffer, int *changed) {
+  return sys_read(buffer, 1, changed);
 }
 
 // Int con signo to string 

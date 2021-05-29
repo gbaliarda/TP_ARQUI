@@ -1,5 +1,12 @@
 #include "libc.h"
 
+typedef struct buffersStruct {
+  char bufferLeft[101];
+  char bufferRight[101];
+} buffersStruct;
+
+typedef buffersStruct *Buffers;
+
 void executeCommand(char * buffer) {
 	int index = 0;
 	char command[21];
@@ -89,17 +96,34 @@ void executeCommand(char * buffer) {
 }
 
 int main() {
-
+	
+	Buffers buffers; //Puntero de tipo buffersStruct 
 	printf("Welcome to the Shell\n\n");
 
-	char buffer[101];
+	char *buffer;
+	buffer = buffers->bufferLeft;
 	int charsRead;
+	int changed = 0;
 
 	while (1) {
 		
 		printf("> ");
-		charsRead = scanf(buffer);
+		charsRead = scanf(buffer, &changed);
+
+		if (changed) {
+			changed = 0;
+			if (buffer == buffers->bufferLeft)
+				buffer = buffers->bufferRight;
+			else
+				buffer = buffers->bufferLeft;
+			continue;
+		}
 		executeCommand(buffer);
+
+
+		// Podemos tener una estructura con bufferLeft y bufferRight y buffer va alternando entre ellos.
+		// Estamos en un read. Vamos leyendo en bufferLeft. Cuando hacemos el cambio de consola, retorna el read el bufferLeft y se llama a read con bufferRight.
+		// Cuando queremos volver a bufferLeft, deberiamos leer desde donde habia quedado.
 
 	}
 									

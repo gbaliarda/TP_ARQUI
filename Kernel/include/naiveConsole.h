@@ -13,5 +13,8 @@ void ncPrintBase(uint64_t value, uint32_t base);
 void ncClear();
 int ncBackspace();
 void ncPrintReg(const char *regName, uint64_t regValue);
+void changeConsole();
+char getConsoleInUse(); 
+void divideConsoles();
 
 #endif

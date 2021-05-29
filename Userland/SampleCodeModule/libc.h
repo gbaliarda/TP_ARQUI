@@ -9,15 +9,19 @@ typedef struct Time {
   int year;
 } Time;
 
+void sys_write(unsigned int fd, const char *buffer, unsigned int count);
+
+int sys_read(char *buffer, int limit, int *changed);
+
 void printf(const char *str);
 
 void putChar(char c);
 
 void printInt(unsigned int num);
 
-int scanf(char *buffer);
+int scanf(char *buffer, int *changed);
 
-int getChar(char *buffer);
+int getChar(char *buffer, int *changed);
 
 int compareStrings(char *str1, char *str2);
 
