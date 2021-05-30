@@ -7,11 +7,12 @@ static uint8_t * const video = (uint8_t*)0xB8000;
 static const uint32_t width = 80;
 static const uint32_t height = 25;
 static uint8_t * currentVideo = (uint8_t*)0xB8000;
-// Cada consola tendra espacio para 39 caracteres (los 2 restantes son pipes que separan ambas)
+// Cada consola tendra espacio para 39 caracteres (los 2 restantes son un pipe y un espacio que separan ambas)
 static uint8_t * currentLeftVideo = (uint8_t*)0xB8000;
 static uint8_t * currentRightVideo = (uint8_t*) (0xB8000 + 82);
 
 static char consoleInUse = 0; // 0 = left, 1 = right
+static char cursor = 0; // 0 apagado, 1 prendido
 
 void initializeShells(){
 	*currentLeftVideo = '>';
@@ -19,6 +20,20 @@ void initializeShells(){
 	currentLeftVideo += 4;
 	currentRightVideo += 4;
 	currentVideo += 4;
+}
+
+void displayCursor() {
+	if (!cursor) {
+		*currentVideo = '_';
+		cursor = 1;
+	}
+	else 
+		deleteCursor();
+}
+
+void deleteCursor() {
+	*currentVideo = ' ';
+	cursor = 0;
 }
 
 void changeConsole() {
@@ -41,7 +56,7 @@ void divideConsoles(){
 	for(int i = 0; i < height; i++){
 		*auxVideo = '|';
 		auxVideo += 2;
-		*auxVideo = '|';
+		*auxVideo = ' ';
 		auxVideo += width*2-2;
 	}
 }
@@ -157,17 +172,57 @@ void ncPrintBase(uint64_t value, uint32_t base)
     ncPrint(buffer);
 }
 
-void ncClear()
-{
-	int i;
+void ncClear() {
 
-	for (i = 0; i < height * width; i++)
-		video[i * 2] = ' ';
-	currentVideo = video;
+	uint16_t * videoChars = video;
+
+	int index, finish, charsCopied = 0;
+
+	if (consoleInUse) {
+		index = width / 2 + 1;
+		finish = width * height;
+	}
+	else {
+		index = 0;
+		finish = width * height - (width / 2 + 1);
+	}
+	while (index < finish) {
+		charsCopied++;
+		videoChars[index++] = 0x0720;
+		if (charsCopied % 39 == 0)
+			index += width / 2 + 1;
+	}
+
+	if (consoleInUse)
+		currentVideo = video + width + 2;
+	else
+		currentVideo = video;
 }
+
+// void lightMode() {
+
+// 	int index, finish, charsCopied = 0;
+
+// 	if (consoleInUse) {
+// 		index = width + 2;
+// 		finish = width*2 * height;
+// 	}
+// 	else {
+// 		index = 1;
+// 		finish = width*2 * height - (width + 2);
+// 	}
+// 	while (index < finish) {
+// 		charsCopied++;
+// 		video[index] = 0xf0;
+// 		index += 2;
+// 		if (charsCopied % 39 == 0)
+// 			index += width + 2;
+// 	}
+// }
 
 int ncBackspace(){
 	if(currentVideo >= video + 2){
+		deleteCursor();
 		*(--currentVideo) = 0x07;
 		*(--currentVideo) = 0;
 		return 1;

@@ -2,6 +2,7 @@
 #include "keyboard.h"
 #include "interrupts.h"
 #include "syscalls.h"
+#include "time.h"
 
 int mayus = 0;
 int countLeft = 0, countRight = 0;
@@ -26,6 +27,8 @@ int read(char* buf, int limit, int *changed)
   while (1 && (count < limit || limit == -1))
   {
 		_hlt();
+    if (ticks_elapsed() % 9 == 0)
+      displayCursor();
 		unsigned char key = getInput();
 		if (key == 0)
       continue;
@@ -51,6 +54,7 @@ int read(char* buf, int limit, int *changed)
         countRight = count;
       else
         countLeft = count;
+      deleteCursor();
       changeConsole();
       return count;
     }

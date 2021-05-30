@@ -91,7 +91,7 @@ void executeCommand(char * buffer) {
 	else if (compareStrings(command, "clear"))
 		sys_clearScreen();
 	else
-		printf("Command not found\n");
+		printf("Command not found, try 'help'\n");
 	
 }
 
@@ -120,11 +120,6 @@ int main() {
 			continue;
 		}
 		executeCommand(buffer);
-
-
-		// Podemos tener una estructura con bufferLeft y bufferRight y buffer va alternando entre ellos.
-		// Estamos en un read. Vamos leyendo en bufferLeft. Cuando hacemos el cambio de consola, retorna el read el bufferLeft y se llama a read con bufferRight.
-		// Cuando queremos volver a bufferLeft, deberiamos leer desde donde habia quedado.
 
 	}
 									

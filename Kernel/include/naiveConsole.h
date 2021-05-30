@@ -17,5 +17,7 @@ void changeConsole();
 char getConsoleInUse(); 
 void divideConsoles();
 void initializeShells();
+void displayCursor();
+void deleteCursor();
 
 #endif

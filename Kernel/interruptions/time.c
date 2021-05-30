@@ -13,3 +13,10 @@ int ticks_elapsed() {
 int seconds_elapsed() {
 	return ticks / 18;
 }
+
+int wait(double seconds) {
+  int initialTicks = ticks_elapsed();
+  while ((ticks_elapsed() - initialTicks) / (double) 18 < seconds)
+    _hlt();
+  return;
+}
