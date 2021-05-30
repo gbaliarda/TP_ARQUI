@@ -90,6 +90,10 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
+void runShells() {
+	((EntryPoint)sampleCodeModuleAddress)();
+}
+
 int main()
 {	
 	ncPrint("[Kernel Main]");
@@ -108,10 +112,11 @@ int main()
 	wait(1);
 	ncNewline();
 	ncClear();
+
 	divideConsoles();
 	initializeShells();
 
-	((EntryPoint)sampleCodeModuleAddress)();
+	runShells();
 
 	return 0;
 }

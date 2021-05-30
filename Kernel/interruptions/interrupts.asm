@@ -20,6 +20,8 @@ GLOBAL _exception6Handler
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
+EXTERN runShells
+EXTERN rebootConsole
 
 SECTION .text
 
@@ -87,7 +89,9 @@ SECTION .text
 	pop rax ; rip esta arriba del stack 
 	printReg rax, 14 ; imprime el IP de donde se produjo la exception
 	push rax
-	call haltcpu ; cortamos la ejecucion del sistema operativo. En este punto, hay que reiniciarlo.
+	; call haltcpu ; cortamos la ejecucion del sistema operativo. En este punto, hay que reiniciarlo.
+	call rebootConsole
+	call runShells
 	; iretq
 %endmacro
 
