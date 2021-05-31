@@ -60,6 +60,7 @@ void executeCommand(char * buffer) {
 		printf("6: opcodeException\n");
 		printf("7: clear\n");
 		printf("8: computeZeros\n");
+		printf("9: cpuid\n");
 	} 
 	else if (compareStrings(command, "inforeg"))
 		sys_inforeg();
@@ -70,7 +71,8 @@ void executeCommand(char * buffer) {
 			sys_printmem(pointer);
 		else
 			printf("Invalid address\n");
-	} else if (compareStrings(command, "printDateTime")) {
+	} 
+	else if (compareStrings(command, "printDateTime")) {
 		Time dateTime;
 		sys_getDateTime(&dateTime);
 		printInt(dateTime.day);
@@ -85,7 +87,8 @@ void executeCommand(char * buffer) {
 		putChar(':');
 		printInt(dateTime.seconds);
 		putChar('\n');
-	} else if (compareStrings(command, "zeroException"))
+	} 
+	else if (compareStrings(command, "zeroException"))
 		printInt(1/0);
 	else if (compareStrings(command, "opcodeException"))
 		throwInvalidOpcode();
@@ -104,7 +107,7 @@ void executeCommand(char * buffer) {
 		}
 		double root1;
 		double root2;
-		if(computeZeros(a, b, c, &root1, &root2)) {
+		if (computeZeros(a, b, c, &root1, &root2)) {
 			dtos(root1, res);
 			printf("Root 1: ");
 			printf(res);
@@ -113,10 +116,58 @@ void executeCommand(char * buffer) {
 			printf("Root 2: ");
 			printf(res);
 			putChar('\n');
-		}
+		} 	
 		else
 			printf("Roots are not real numbers\n");
 	}
+	else if (compareStrings(command, "cpuid")) {
+		cpuInformation cpuidData;
+		cpuid(&cpuidData);
+
+		printf("sse: ");
+		cpuidData.sse ? printf("ACTIVADO") : printf("DESACTIVADO");
+		putChar('\n');
+
+		printf("sse2: ");
+		cpuidData.sse2 ? printf("ACTIVADO") : printf("DESACTIVADO");
+		putChar('\n');
+
+		printf("sse3: ");
+		cpuidData.sse3 ? printf("ACTIVADO") : printf("DESACTIVADO");
+		putChar('\n');
+
+		printf("pclmulqdq: ");
+		cpuidData.pclmulqdq ? printf("ACTIVADO") : printf("DESACTIVADO");
+		putChar('\n');
+
+		printf("fma: ");
+		cpuidData.fma ? printf("ACTIVADO") : printf("DESACTIVADO");
+		putChar('\n');
+
+		printf("sse4.1: ");
+		cpuidData.sse41 ? printf("ACTIVADO") : printf("DESACTIVADO");
+		putChar('\n');
+
+		printf("sse4.2: ");
+		cpuidData.sse42 ? printf("ACTIVADO") : printf("DESACTIVADO");
+		putChar('\n');
+
+		printf("avx: ");
+		cpuidData.avx ? printf("ACTIVADO") : printf("DESACTIVADO");
+		putChar('\n');
+
+		printf("f16c: ");
+		cpuidData.f16c ? printf("ACTIVADO") : printf("DESACTIVADO");
+		putChar('\n');
+
+		printf("vpclmulqdq: ");
+		cpuidData.vpclmulqdq ? printf("ACTIVADO") : printf("DESACTIVADO");
+		putChar('\n');
+
+		printf("avx2: ");
+		cpuidData.avx2 ? printf("ACTIVADO") : printf("DESACTIVADO");
+		putChar('\n');
+	} 
 	else
 		printf("Command not found, try 'help'\n");
 	

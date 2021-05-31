@@ -9,6 +9,34 @@ typedef struct Time {
   int year;
 } Time;
 
+typedef struct cpuidRegisters{
+  uint32_t ebx;
+  uint32_t ecx;
+  uint32_t edx;
+} cpuidRegisters;
+
+typedef struct cpuInformation {
+  //EAX = 1
+  // Processor Info EDX
+  unsigned char sse;
+  unsigned char sse2;
+
+  // Processor Info ECX
+  unsigned char sse3;
+  unsigned char pclmulqdq;
+  unsigned char fma;
+  unsigned char sse41;
+  unsigned char sse42;
+  unsigned char avx;
+  unsigned char f16c;
+
+  //EAX = 7
+  // Extended Features ECX
+  unsigned char vpclmulqdq;
+  // Extended Features EBX
+  unsigned char avx2;
+} cpuInformation;
+
 void sys_write(unsigned int fd, const char *buffer, unsigned int count);
 
 int sys_read(char *buffer, int limit, int *changed);
@@ -45,3 +73,13 @@ int computeZeros(double a, double b, double c, double *root1, double *root2);
 void dtos(double num, char *buff);
 
 double strToDouble(char *str, int *ok);
+
+void cpuid();
+
+void getCpuProcessorInfo(cpuidRegisters *cpuidRegister);
+
+void getCpuExtendedFeatures(cpuidRegisters *cpuidRegister);
+
+int cpuidAvailability();
+
+int getCpuLeaf();

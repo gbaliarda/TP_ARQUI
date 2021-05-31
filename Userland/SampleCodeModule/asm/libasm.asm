@@ -1,5 +1,9 @@
 GLOBAL throwInvalidOpcode
 GLOBAL computeZeros
+GLOBAL cpuidAvailability
+GLOBAL getCpuLeaf
+GLOBAL getCpuProcessorInfo
+GLOBAL getCpuExtendedFeatures
 
 section .text
 
@@ -7,6 +11,39 @@ throwInvalidOpcode:
   ud2
   ret
 
+cpuidAvailability:
+    ; Revisa si se puede usar cpuid. Fuente: "https://wiki.osdev.org/CPUID"
+    pushf                              ;Save EFLAGS
+    pushf                               ;Store EFLAGS
+    xor dword [esp],0x00200000           ;Invert the ID bit in stored EFLAGS
+    popf                                ;Load stored EFLAGS (with ID bit inverted)
+    pushf                               ;Store EFLAGS again (ID bit may or may not be inverted)
+    pop rax                              ;eax = modified EFLAGS (ID bit may or may not be inverted)
+    xor eax,[esp]                        ;eax = whichever bits were changed
+    popf                                ;Restore original EFLAGS
+    and eax,0x00200000                   ;eax = zero if ID bit can't be changed, else non-zero
+    ret
+
+getCpuLeaf:
+  xor eax, eax
+  cpuid
+  ret
+getCpuProcessorInfo:
+  xor eax, eax
+  mov eax, 1
+  cpuid
+  mov [rdi], ebx
+  mov [rdi+4], ecx
+  mov [rdi+8], edx
+  ret
+
+getCpuExtendedFeatures:
+  mov eax, 7
+  cpuid
+  mov [rdi], ebx
+  mov [rdi+4], ecx
+  mov [rdi+8], edx
+  ret
 computeZeros:
   ; cargamos los argumentos
   movq [a], xmm0               ; movq = move qword
