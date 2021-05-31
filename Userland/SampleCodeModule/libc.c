@@ -232,15 +232,15 @@ void cpuid(cpuInformation* cpuidData){
   getCpuProcessorInfo(&cpuidRegister);
 
   // EDX. sse: 25, sse2: 26
-  cpuidData->sse = (cpuidRegister.edx & 0x2000000); // 0010 0000 0000 0000 0000 0000 0000
-  cpuidData->sse2 = (cpuidRegister.edx & 0x4000000); // 0100 0000 0000 0000 0000 0000 0000
+  cpuidData->sse = (cpuidRegister.edx & 0x02000000); // 0010 0000 0000 0000 0000 0000 0000
+  cpuidData->sse2 = (cpuidRegister.edx & 0x04000000); // 0100 0000 0000 0000 0000 0000 0000
 
   //ECX sse3: 0 - pclmulqdq: 1 - fma: 12 - sse41: 19 - sse42: 20 - avx: 28 - f16c: 29
-  cpuidData->sse3 = (cpuidRegister.ecx & 0x1); // 0001
-  cpuidData->pclmulqdq = (cpuidRegister.ecx & 0x2); // 0010
-  cpuidData->fma = (cpuidRegister.ecx & 0x1000); // 0001 0000 0000 0000
-  cpuidData->sse41 = (cpuidRegister.ecx & 0x80000); // 1000 0000 0000 0000 0000
-  cpuidData->sse42 = (cpuidRegister.ecx & 0x100000); // 1000 0000 0000 0000 0000
+  cpuidData->sse3 = (cpuidRegister.ecx & 0x00000001); // 0001
+  cpuidData->pclmulqdq = (cpuidRegister.ecx & 0x00000002); // 0010
+  cpuidData->fma = (cpuidRegister.ecx & 0x00001000); // 0001 0000 0000 0000
+  cpuidData->sse41 = (cpuidRegister.ecx & 0x00080000); // 1000 0000 0000 0000 0000
+  cpuidData->sse42 = (cpuidRegister.ecx & 0x00100000); // 1000 0000 0000 0000 0000
   cpuidData->avx = (cpuidRegister.ecx & 0x10000000); // 0001 0000 0000 0000 0000 0000 0000 0000
   cpuidData->f16c = (cpuidRegister.ecx & 0x20000000); // 0010 0000 0000 0000 0000 0000 0000 0000
 
@@ -255,7 +255,7 @@ void cpuid(cpuInformation* cpuidData){
 
   getCpuExtendedFeatures(&cpuidRegister);
 
-  cpuidData->vpclmulqdq = (cpuidRegister.ecx & 0x400); // 0100 0000 0000
+  cpuidData->vpclmulqdq = (cpuidRegister.ecx & 0x00000400); // 0100 0000 0000
 
-  cpuidData->avx2 = (cpuidRegister.ebx & 0x20); // 0010 0000
+  cpuidData->avx2 = (cpuidRegister.ebx & 0x00000020); // 0010 0000
 }
