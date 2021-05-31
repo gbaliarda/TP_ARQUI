@@ -59,6 +59,7 @@ void executeCommand(char * buffer) {
 		printf("5: zeroException\n");
 		printf("6: opcodeException\n");
 		printf("7: clear\n");
+		printf("8: computeZeros\n");
 	} 
 	else if (compareStrings(command, "inforeg"))
 		sys_inforeg();
@@ -90,6 +91,32 @@ void executeCommand(char * buffer) {
 		throwInvalidOpcode();
 	else if (compareStrings(command, "clear"))
 		sys_clearScreen();
+	else if (compareStrings(command, "computeZeros")) {
+		char res[11];
+		int ok = 1;
+		double a, b, c;
+		a = strToDouble(args[0], &ok);
+		b = strToDouble(args[1], &ok);
+		c = strToDouble(args[2], &ok);
+		if (!ok) {
+			printf("Invalid arguments a, b or c\n");
+			return;
+		}
+		double root1;
+		double root2;
+		if(computeZeros(a, b, c, &root1, &root2)) {
+			dtos(root1, res);
+			printf("Root 1: ");
+			printf(res);
+			putChar('\n');
+			dtos(root2, res);
+			printf("Root 2: ");
+			printf(res);
+			putChar('\n');
+		}
+		else
+			printf("Roots are not real numbers\n");
+	}
 	else
 		printf("Command not found, try 'help'\n");
 	

@@ -44,55 +44,25 @@ void * initializeKernelBinary()
 
 	ncPrint("[x64BareBones]");
 	ncNewline();
-
-	ncPrint("CPU Vendor:");
-	ncPrint(cpuVendor(buffer));
 	ncNewline();
 
-	// ncPrint("[Loading modules]");
-	// ncNewline();
 	void * moduleAddresses[] = {
 		sampleCodeModuleAddress,
 		sampleDataModuleAddress
 	};
-
-	ncPrint("Loading modules...");
-	ncNewline();
+	
 	loadModules(&endOfKernelBinary, moduleAddresses);
-	// ncPrint("[Done]");
-	// ncNewline();
-	// ncNewline();
-
-	// ncPrint("[Initializing kernel's binary]");
-	// ncNewline();
-
-	ncPrint("Clearing BSS...");
-	ncNewline();
 	clearBSS(&bss, &endOfKernel - &bss);
 	ncNewline();
 
-	// ncPrint("  text: 0x");
-	// ncPrintHex((uint64_t)&text);
-	// ncNewline();
-	// ncPrint("  rodata: 0x");
-	// ncPrintHex((uint64_t)&rodata);
-	// ncNewline();
-	// ncPrint("  data: 0x");
-	// ncPrintHex((uint64_t)&data);
-	// ncNewline();
-	// ncPrint("  bss: 0x");
-	// ncPrintHex((uint64_t)&bss);
-	// ncNewline();
-
-	// ncPrint("[Done]");
-	// ncNewline();
-	// ncNewline();
 	return getStackBase();
 }
 
 void runShells() {
 	((EntryPoint)sampleCodeModuleAddress)();
 }
+
+// void enableSSE();
 
 int main()
 {	
@@ -102,6 +72,9 @@ int main()
 	ncPrintHex((uint64_t)sampleCodeModuleAddress);
 	ncNewline();
 	ncNewline();
+
+	// Pareciera no hacer falta habilitar nada extra
+	// enableSSE();
 
 	// Cargamos la IDT
 	ncPrint("Loading IDT...");

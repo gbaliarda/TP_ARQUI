@@ -24,31 +24,6 @@ int getChar(char *buffer, int *changed) {
   return sys_read(buffer, 1, changed);
 }
 
-// Int con signo to string 
-void itos(int value, char* target){
-    int digit; 
-    int sign = 1; // 0 negativo, 1 positivo
-    int i = -1, j = 0;
-    char aux[11];
-    if(value < 0){
-        sign = 0;
-        value *= -1;
-    }
-    do{
-        i++;
-        digit = value % 10;
-        aux[i] = digit + '0'; // 48 = '0' 
-        value /= 10; 
-    } while(value > 0);
-    if (!sign){ //Si es negativo le agrego el - al principio
-        target[j++] = '-';
-    } 
-    while(i > -1){ //Doy vuelta al aux y lo guardo en target
-        target[j++] = aux[i--];
-    }
-    target[j] = 0;
-}
-
 static uint32_t uintToBase(uint64_t value, char *buffer, uint32_t base)
 {
 	char *p = buffer;
@@ -149,7 +124,93 @@ uint64_t atoi(char *str, int *ok){
       num = num * 10 + str[i] - '0';
     }
   }
-
   return num;
 }
 
+// Int con signo to string - retorna la cantidad de caracteres escritos
+int itos(int value, char* target, int initialIndex){
+    int digit; 
+    int sign = 1; // 0 negativo, 1 positivo
+    int i = -1, j = initialIndex;
+    char aux[11];
+    if(value < 0){
+        sign = 0;
+        value *= -1;
+    }
+    do{
+        i++;
+        digit = value % 10;
+        aux[i] = digit + '0'; // 48 = '0' 
+        value /= 10; 
+    } while(value > 0);
+    if (!sign){ //Si es negativo le agrego el - al principio
+        target[j++] = '-';
+    } 
+    while(i > -1){ //Doy vuelta al aux y lo guardo en target
+        target[j++] = aux[i--];
+    }
+    target[j] = 0;
+    return j;
+}
+
+void dtos(double num, char *buff) {
+  int len = itos((int)num, buff, 0);
+
+  num -= (int)num;
+
+  buff[len++] = ',';
+
+
+  num *= 100000000; // 4 decimales
+  if (num < 0)
+    num *= -1;
+
+  itos((int)num, buff, len);
+  return;
+}
+
+double strToDouble(char *str, int *ok) {
+  int sign = 1, idx = 0, auxIdx = 0;
+  if (str[0] == '-') {
+    sign = -1;
+    str++;
+  }
+  
+  char aux[10];
+  while (str[idx] && str[idx] != '.') {
+    aux[idx] = str[idx];
+    idx++;
+  }
+
+  aux[idx] = 0;
+  int integerPart = atoi(aux, ok);
+
+  if (!(*ok))
+    return -1;
+
+  double decimalPart = 0;
+
+  if (str[idx] == '.') {
+    str++;
+    while (str[idx])
+      aux[auxIdx++] = str[idx++];
+    aux[auxIdx] = 0;
+    decimalPart = (double) atoi(aux, ok);
+  }
+  auxIdx = 0;
+  while (aux[auxIdx] && aux[auxIdx] == '0')
+    auxIdx++;
+
+  if (!(*ok))
+    return -1;
+
+  while (decimalPart >= 1)
+    decimalPart /= 10;
+
+  while (auxIdx > 0) {
+    decimalPart /= 10;
+    auxIdx--;
+  }
+
+  return ((double) integerPart + decimalPart) * sign;
+}
