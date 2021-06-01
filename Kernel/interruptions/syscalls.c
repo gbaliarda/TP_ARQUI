@@ -30,53 +30,54 @@ int read(char* buf, int limit, int *changed)
     if (ticks_elapsed() % 9 == 0)
       displayCursor();
 		unsigned char key = getInput();
-		if (key == 0)
-      continue;
-    // Enter
-    else if (key == '\n') {
-      ncNewline();
-      if (console) 
-        countRight = 0;
-      else
-        countLeft = 0;
-      buf[count] = 0; // Termina en 0
-      return count;
-    }
-    // Backspace
-    else if (key == 8) {
-      if (count > 0 && ncBackspace())
-        count--;
-    }
-    // Tab - cambio de consolas. Por default right 
-    else if (key == 9) {
-      *changed = 1;
-      if (console)
-        countRight = count;
-      else
-        countLeft = count;
-      deleteCursor();
-      changeConsole();
-      return count;
-    }
-    // Bloq Mayus
-    else if (key == 11) {
-      mayus = !mayus;
-    }
-    else if (key == 14 || key == 15) {
-      mayus = 1;
-    }
-    else if (key == 0xAA || key == 0xB6) {
-      mayus = 0;
-    }
-    else {
-      if(mayus && key >= 'a' && key <= 'z')
+
+    switch (key) {
+      case 0:
+        continue;
+        break;
+
+      case '\n':
+        ncNewline();
+        if (console) 
+          countRight = 0;
+        else
+          countLeft = 0;
+        buf[count] = 0; // Termina en 0
+        return count;
+
+      case 8:
+        if (count > 0 && ncBackspace())
+          count--;
+        break;
+
+      case 9:
+        *changed = 1;
+        if (console)
+          countRight = count;
+        else
+          countLeft = count;
+        deleteCursor();
+        changeConsole();
+        return count;
+
+      // shifts izq, der y sus release; y bloq mayus
+      case 11:
+      case 14:
+      case 15:
+      case 0xAA:
+      case 0xB6:
+        mayus = !mayus;
+        break;
+      //
+      default: 
+        if(mayus && key >= 'a' && key <= 'z')
         key -= 'a' - 'A';
-      
-      // Solo guardamos hasta 100 caracteres en el comando, el resto se imprimiran solamente
-      if (count < 100)
-        buf[count] = key;
-      count++;
-      ncPrintChar(key);
+        // Solo guardamos hasta 100 caracteres en el comando, el resto se imprimiran solamente
+        if (count < 100)
+          buf[count] = key;
+        count++;
+        ncPrintChar(key);
+        break;
     }
 	}
   buf[count] = 0; // Termina en 0

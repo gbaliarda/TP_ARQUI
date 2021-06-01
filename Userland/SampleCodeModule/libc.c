@@ -215,47 +215,48 @@ double strToDouble(char *str, int *ok) {
   return ((double) integerPart + decimalPart) * sign;
 }
 
-void cpuid(cpuInformation* cpuidData){
-  if(cpuidAvailability() == 0) {
-    printf("cpuid not supported.\n");
-    return;
-  }
+int cpuid(cpuInformation* cpuidData){
+  if(cpuidAvailability() == 0)
+    return -1;
+  
   cpuidRegisters cpuidRegister;
   
   int maxEaxValue = getCpuLeaf();
 
-  if(maxEaxValue < 1) {
-    printf("Processor Info not supported.\n");
-    return;
-  }
+  if(maxEaxValue < 1)
+    return maxEaxValue;
 
   getCpuProcessorInfo(&cpuidRegister);
+  
+  // EDX. mmx:23 ,sse: 25, sse2: 26
+  cpuidData->mmx = (cpuidRegister.edx & 0x00800000) >> 23; // 0000 0000 1000 0000 0000 0000 0000 0000
+  cpuidData->sse = (cpuidRegister.edx & 0x02000000) >> 25; // 0000 0010 0000 0000 0000 0000 0000 0000
+  cpuidData->sse2 = (cpuidRegister.edx & 0x04000000) >> 26; // 0100 0000 0000 0000 0000 0000 0000
 
-  // EDX. sse: 25, sse2: 26
-  cpuidData->sse = (cpuidRegister.edx & 0x02000000); // 0010 0000 0000 0000 0000 0000 0000
-  cpuidData->sse2 = (cpuidRegister.edx & 0x04000000); // 0100 0000 0000 0000 0000 0000 0000
-
-  //ECX sse3: 0 - pclmulqdq: 1 - fma: 12 - sse41: 19 - sse42: 20 - avx: 28 - f16c: 29
+  //ECX sse3: 0 - pclmulqdq: 1 - vmx: 5, smx: 6 - fma: 12 - sse41: 19 - sse42: 20 - aes: 25 - avx: 28 - f16c: 29
   cpuidData->sse3 = (cpuidRegister.ecx & 0x00000001); // 0001
-  cpuidData->pclmulqdq = (cpuidRegister.ecx & 0x00000002); // 0010
-  cpuidData->fma = (cpuidRegister.ecx & 0x00001000); // 0001 0000 0000 0000
-  cpuidData->sse41 = (cpuidRegister.ecx & 0x00080000); // 1000 0000 0000 0000 0000
-  cpuidData->sse42 = (cpuidRegister.ecx & 0x00100000); // 1000 0000 0000 0000 0000
-  cpuidData->avx = (cpuidRegister.ecx & 0x10000000); // 0001 0000 0000 0000 0000 0000 0000 0000
-  cpuidData->f16c = (cpuidRegister.ecx & 0x20000000); // 0010 0000 0000 0000 0000 0000 0000 0000
+  cpuidData->pclmulqdq = (cpuidRegister.ecx & 0x00000002) >> 1; // 0010
+  cpuidData->vmx = (cpuidRegister.ecx & 0x00000020) >> 5; // 0010 0000
+  cpuidData->smx = (cpuidRegister.ecx & 0x00000040) >> 6; // 0100 0000
+  cpuidData->fma = (cpuidRegister.ecx & 0x00001000) >> 12; // 0000 0000 0000 0000 0001 0000 0000 0000
+  cpuidData->sse41 = (cpuidRegister.ecx & 0x00080000) >> 19; // 1000 0000 0000 0000 0000
+  cpuidData->sse42 = (cpuidRegister.ecx & 0x00100000) >> 20; // 0000 0000 0001 0000 0000 0000 0000 0000
+  cpuidData->aes = (cpuidRegister.ecx & 0x02000000) >> 25; // 0010 0000 0000 0000 0000 0000 0000
+  cpuidData->avx = (cpuidRegister.ecx & 0x10000000) >> 28; // 0001 0000 0000 0000 0000 0000 0000 0000
+  cpuidData->f16c = (cpuidRegister.ecx & 0x20000000) >> 29; // 0010 0000 0000 0000 0000 0000 0000 0000
 
   //EAX = 7
-  //ECX vpclmulqdq: 10 
-  //EBX avx2: 5
 
-  if(maxEaxValue < 7){
-    printf("Extended Features not supported.\n");
-    return;
-  }
+  if(maxEaxValue < 7)
+    return maxEaxValue;
 
   getCpuExtendedFeatures(&cpuidRegister);
 
-  cpuidData->vpclmulqdq = (cpuidRegister.ecx & 0x00000400); // 0100 0000 0000
+  // ECX:  vaes: 9, vpclmulqdq: 10
+  cpuidData->vaes = (cpuidRegister.ecx & 0x00000200) >> 9; // 0010 0000 0000
+  cpuidData->vpclmulqdq = (cpuidRegister.ecx & 0x00000400) >> 10; // 0100 0000 0000
 
-  cpuidData->avx2 = (cpuidRegister.ebx & 0x00000020); // 0010 0000
+  cpuidData->avx2 = (cpuidRegister.ebx & 0x00000020) >> 5; // 0010 0000
+
+  return maxEaxValue;
 }

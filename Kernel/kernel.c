@@ -62,8 +62,6 @@ void runShells() {
 	((EntryPoint)sampleCodeModuleAddress)();
 }
 
-// void enableSSE();
-
 int main()
 {	
 	ncPrint("[Kernel Main]");
@@ -73,16 +71,13 @@ int main()
 	ncNewline();
 	ncNewline();
 
-	// Pareciera no hacer falta habilitar nada extra
-	// enableSSE();
-
 	// Cargamos la IDT
 	ncPrint("Loading IDT...");
 	ncNewline();
 	load_idt();
 
 	ncPrint("Loading Shells...");
-	wait(1);
+	wait(1); // 1 seg de espera 
 	ncNewline();
 	ncClear();
 

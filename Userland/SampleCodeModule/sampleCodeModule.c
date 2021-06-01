@@ -7,6 +7,8 @@ typedef struct buffersStruct {
 
 typedef buffersStruct *Buffers;
 
+void printProcessorInfo(cpuInformation *cpuidData, int maxEaxValue);
+
 void executeCommand(char * buffer) {
 	int index = 0;
 	char command[21];
@@ -122,51 +124,8 @@ void executeCommand(char * buffer) {
 	}
 	else if (compareStrings(command, "cpuid")) {
 		cpuInformation cpuidData;
-		cpuid(&cpuidData);
-
-		printf("sse: ");
-		cpuidData.sse ? printf("ACTIVADO") : printf("DESACTIVADO");
-		putChar('\n');
-
-		printf("sse2: ");
-		cpuidData.sse2 ? printf("ACTIVADO") : printf("DESACTIVADO");
-		putChar('\n');
-
-		printf("sse3: ");
-		cpuidData.sse3 ? printf("ACTIVADO") : printf("DESACTIVADO");
-		putChar('\n');
-
-		printf("pclmulqdq: ");
-		cpuidData.pclmulqdq ? printf("ACTIVADO") : printf("DESACTIVADO");
-		putChar('\n');
-
-		printf("fma: ");
-		cpuidData.fma ? printf("ACTIVADO") : printf("DESACTIVADO");
-		putChar('\n');
-
-		printf("sse4.1: ");
-		cpuidData.sse41 ? printf("ACTIVADO") : printf("DESACTIVADO");
-		putChar('\n');
-
-		printf("sse4.2: ");
-		cpuidData.sse42 ? printf("ACTIVADO") : printf("DESACTIVADO");
-		putChar('\n');
-
-		printf("avx: ");
-		cpuidData.avx ? printf("ACTIVADO") : printf("DESACTIVADO");
-		putChar('\n');
-
-		printf("f16c: ");
-		cpuidData.f16c ? printf("ACTIVADO") : printf("DESACTIVADO");
-		putChar('\n');
-
-		printf("vpclmulqdq: ");
-		cpuidData.vpclmulqdq ? printf("ACTIVADO") : printf("DESACTIVADO");
-		putChar('\n');
-
-		printf("avx2: ");
-		cpuidData.avx2 ? printf("ACTIVADO") : printf("DESACTIVADO");
-		putChar('\n');
+		int maxEaxValue = cpuid(&cpuidData);
+		printProcessorInfo(&cpuidData, maxEaxValue);
 	} 
 	else
 		printf("Command not found, try 'help'\n");
@@ -202,5 +161,85 @@ int main() {
 	}
 									
 	return 0xDEADBEEF;
+}
+
+void printProcessorInfo(cpuInformation *cpuidData, int maxEaxValue) {
+	if(maxEaxValue == -1) {
+		printf("cpuid not supported.\n");
+		return;
+	} 
+	else if (maxEaxValue < 1) {
+		printf("Processor Info not supported.\n");
+		return;
+	}
+	
+	printf("mmx_support: ");
+	cpuidData->mmx ? printf("Yes") : printf("No");
+	putChar('\n');
+
+	printf("sse_support: ");
+	cpuidData->sse ? printf("Yes") : printf("No");
+	putChar('\n');
+
+	printf("sse2_support: ");
+	cpuidData->sse2 ? printf("Yes") : printf("No");
+	putChar('\n');
+
+	printf("sse3_support: ");
+	cpuidData->sse3 ? printf("Yes") : printf("No");
+	putChar('\n');
+
+	printf("pclmulqdq_support: ");
+	cpuidData->pclmulqdq ? printf("Yes") : printf("No");
+	putChar('\n');
+
+	printf("vmx_support: ");
+	cpuidData->vmx ? printf("Yes") : printf("No");
+	putChar('\n');
+
+	printf("smx_support: ");
+	cpuidData->smx ? printf("Yes") : printf("No");
+	putChar('\n');
+
+	printf("fma_support: ");
+	cpuidData->fma ? printf("Yes") : printf("No");
+	putChar('\n');
+
+	printf("sse4.1_support: ");
+	cpuidData->sse41 ? printf("Yes") : printf("No");
+	putChar('\n');
+
+	printf("sse4.2_support: ");
+	cpuidData->sse42 ? printf("Yes") : printf("No");
+	putChar('\n');
+
+	printf("aes_support: ");
+	cpuidData->aes ? printf("Yes") : printf("No");
+	putChar('\n');
+
+	printf("avx_support: ");
+	cpuidData->avx ? printf("Yes") : printf("No");
+	putChar('\n');
+
+	printf("f16c_support: ");
+	cpuidData->f16c ? printf("Yes") : printf("No");
+	putChar('\n');
+
+	if(maxEaxValue < 7) {
+		printf("Extended Features not supported.\n");
+		return;
+	}
+
+	printf("vaes_support: ");
+	cpuidData->vaes ? printf("Yes") : printf("No");
+	putChar('\n');
+
+	printf("vpclmulqdq_support: ");
+	cpuidData->vpclmulqdq ? printf("Yes") : printf("No");
+	putChar('\n');
+
+	printf("avx2_support: ");
+	cpuidData->avx2 ? printf("Yes") : printf("No");
+	putChar('\n');
 }
 

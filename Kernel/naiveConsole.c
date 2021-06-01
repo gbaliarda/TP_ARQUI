@@ -199,27 +199,6 @@ void ncClear() {
 		currentVideo = video;
 }
 
-// void lightMode() {
-
-// 	int index, finish, charsCopied = 0;
-
-// 	if (consoleInUse) {
-// 		index = width + 2;
-// 		finish = width*2 * height;
-// 	}
-// 	else {
-// 		index = 1;
-// 		finish = width*2 * height - (width + 2);
-// 	}
-// 	while (index < finish) {
-// 		charsCopied++;
-// 		video[index] = 0xf0;
-// 		index += 2;
-// 		if (charsCopied % 39 == 0)
-// 			index += width + 2;
-// 	}
-// }
-
 int ncBackspace(){
 	if(currentVideo >= video + 2){
 		deleteCursor();
