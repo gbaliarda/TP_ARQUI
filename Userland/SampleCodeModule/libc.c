@@ -161,7 +161,7 @@ void dtos(double num, char *buff) {
   buff[len++] = ',';
 
 
-  num *= 100000000; // 4 decimales
+  num *= 100000000; // 8 decimales
   if (num < 0)
     num *= -1;
 
