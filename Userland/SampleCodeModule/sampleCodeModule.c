@@ -97,7 +97,7 @@ void executeCommand(char * buffer) {
 	else if (compareStrings(command, "clear"))
 		sys_clearScreen();
 	else if (compareStrings(command, "computeZeros")) {
-		char res[11];
+		char res[20];
 		int ok = 1;
 		double a, b, c;
 		a = strToDouble(args[0], &ok);
