@@ -76,6 +76,8 @@ void sys_clearScreen();
 // Retorna 0 si las raices son imaginarias, 1 si son reales
 int computeZeros(double a, double b, double c, double *root1, double *root2);
 
+void divZero();
+
 void dtos(double num, char *buff);
 
 double strToDouble(char *str, int *ok);

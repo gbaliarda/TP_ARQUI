@@ -4,6 +4,7 @@ GLOBAL cpuidAvailability
 GLOBAL getCpuLeaf
 GLOBAL getCpuProcessorInfo
 GLOBAL getCpuExtendedFeatures
+GLOBAL divZero
 
 section .text
 
@@ -44,6 +45,14 @@ getCpuExtendedFeatures:
   mov [rdi+4], ecx
   mov [rdi+8], edx
   ret
+
+
+divZero:
+  xor rax, rax
+  div rax
+  ret
+
+
 computeZeros:
   ; cargamos los argumentos
   movq [a], xmm0               ; movq = move qword
@@ -91,7 +100,7 @@ computeZeros:
 .no_real_solutions:
   ffree st0                    ; clean stack
   mov rax, 0                   ; return value is 0
-.exit
+.exit:
   ret
 
 section .data

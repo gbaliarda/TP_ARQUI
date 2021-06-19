@@ -1,5 +1,4 @@
 #include "libc.h"
-#define ULONG_MAX 18446744073709551615
 
 static int strlen(const char *str) {
   int len = 0;
@@ -84,11 +83,6 @@ int compareStrings(char *str1, char *str2){
 uint64_t hex2int(char *hex, int *ok) {
     uint64_t val = 0;
     while (*hex) {
-        // Checkeamos si se pasa de una direccion de memoria de 64 bits
-        if(val > ULONG_MAX / 10) {
-          *ok = 0;
-          return 0;
-        }
         // get current character then increment
         uint8_t byte = *hex++;
         
@@ -116,13 +110,8 @@ uint64_t atoi(char *str, int *ok){
       *ok = 0;
       return 0;
     }
-    else {
-      if(num > ULONG_MAX / 10) {
-        *ok = 0;
-        return 0;
-      }
+    else
       num = num * 10 + str[i] - '0';
-    }
   }
   return num;
 }

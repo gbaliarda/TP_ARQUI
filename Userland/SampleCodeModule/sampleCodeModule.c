@@ -1,11 +1,7 @@
 #include "libc.h"
 
-typedef struct buffersStruct {
-  char bufferLeft[101];
-  char bufferRight[101];
-} buffersStruct;
-
-typedef buffersStruct *Buffers;
+char bufferLeft[101];
+char bufferRight[101];
 
 void printProcessorInfo(cpuInformation *cpuidData, int maxEaxValue);
 
@@ -90,8 +86,9 @@ void executeCommand(char * buffer) {
 		printInt(dateTime.seconds);
 		putChar('\n');
 	} 
-	else if (compareStrings(command, "zeroException"))
-		printInt(1/0);
+	else if (compareStrings(command, "zeroException")) {
+		divZero();
+	}
 	else if (compareStrings(command, "opcodeException"))
 		throwInvalidOpcode();
 	else if (compareStrings(command, "clear"))
@@ -134,11 +131,8 @@ void executeCommand(char * buffer) {
 
 int main() {
 	
-	Buffers buffers; //Puntero de tipo buffersStruct 
-
 	char *buffer;
-	buffer = buffers->bufferLeft;
-	int charsRead;
+	buffer = bufferLeft;
 	int changed = 1;
 
 	while (1) {
@@ -147,20 +141,20 @@ int main() {
 			printf("> ");
 		else
 			changed = 0;
-		charsRead = scanf(buffer, &changed);
+		scanf(buffer, &changed);
 
 		if (changed) {
-			if (buffer == buffers->bufferLeft)
-				buffer = buffers->bufferRight;
+			if (buffer == bufferLeft)
+				buffer = bufferRight;
 			else
-				buffer = buffers->bufferLeft;
+				buffer = bufferLeft;
 			continue;
 		}
 		executeCommand(buffer);
 
 	}
 									
-	return 0xDEADBEEF;
+	return 0xDEADBEEF; 
 }
 
 void printProcessorInfo(cpuInformation *cpuidData, int maxEaxValue) {
