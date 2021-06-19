@@ -6,6 +6,7 @@
 
 int mayus = 0;
 int countLeft = 0, countRight = 0;
+Registers *backupRegisters;
 
 int64_t write(uint64_t fd, const char* buf, uint64_t count) {
   switch (fd) {
@@ -60,6 +61,10 @@ int read(char* buf, int limit, int *changed)
         changeConsole();
         return count;
 
+      case 17:
+        saveState(backupRegisters);
+        break;
+
       // shifts izq, der y sus release; y bloq mayus
       case 11:
       case 14:
@@ -68,7 +73,7 @@ int read(char* buf, int limit, int *changed)
       case 0xB6:
         mayus = !mayus;
         break;
-      //
+      
       default: 
         if(mayus && key >= 'a' && key <= 'z')
         key -= 'a' - 'A';
@@ -84,8 +89,22 @@ int read(char* buf, int limit, int *changed)
   return (count >= 100) ? 100 : count; // Como solo se guardan hasta 100 caracteres en el buffer, se retornan hasta 100
 }
 
-void inforeg() {
-  dumpRegs();
+void inforeg(Registers* registers) {
+  registers->rax = backupRegisters->rax;
+	registers->rbx = backupRegisters->rbx;
+	registers->rcx = backupRegisters->rcx;
+	registers->rdx = backupRegisters->rdx;
+	registers->rbp = backupRegisters->rbp;
+	registers->rdi = backupRegisters->rdi;
+	registers->rsi = backupRegisters->rsi;
+	registers->r8 = backupRegisters->r8;
+	registers->r9 = backupRegisters->r9;
+	registers->r10 = backupRegisters->r10;
+	registers->r11 = backupRegisters->r11;
+	registers->r12 = backupRegisters->r12;
+	registers->r13 = backupRegisters->r13;
+	registers->r14 = backupRegisters->r14;
+	registers->r15 = backupRegisters->r15;
 }
 
 void printmem(uint64_t pointer) {

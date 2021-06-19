@@ -62,6 +62,18 @@ void printInt(unsigned int num) {
   sys_write(1, buffer, digits);
 }
 
+void printReg(const char *regName, uint64_t regValue)
+{
+  char buffer[17];
+	printf(regName);
+	printf(": ");
+	int digits = uintToBase(regValue, buffer, 16);
+	for (int i = 1; i < 16 - digits; i++)
+		printf("0");
+	printf(buffer);
+	putChar('\n');
+}
+
 int compareStrings(char *str1, char *str2){
   int index = 0;
   

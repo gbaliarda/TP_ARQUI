@@ -60,8 +60,25 @@ void executeCommand(char * buffer) {
 		printf("8: computeZeros\n");
 		printf("9: cpuid\n");
 	} 
-	else if (compareStrings(command, "inforeg"))
-		sys_inforeg();
+	else if (compareStrings(command, "inforeg")) {
+		Registers registers;
+		sys_inforeg(&registers);
+		printReg("rax",registers.rax);
+		printReg("rbx",registers.rbx);
+		printReg("rcx",registers.rcx);
+		printReg("rdx",registers.rdx);
+		printReg("rbp",registers.rbp);
+		printReg("rdi",registers.rdi);
+		printReg("rsi",registers.rsi);
+		printReg("r8",registers.r8);
+		printReg("r9",registers.r9);	
+		printReg("r10",registers.r10);
+		printReg("r11",registers.r11);
+		printReg("r12",registers.r12);
+		printReg("r13",registers.r13);
+		printReg("r14",registers.r14);
+		printReg("r15",registers.r15);
+	}
 	else if (compareStrings(command, "printmem")) {
 		int ok = 1;
 		uint64_t pointer = hex2int(args[0], &ok);
