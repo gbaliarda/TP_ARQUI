@@ -27,6 +27,8 @@ int64_t syscallDispatcher(int64_t arg0, int64_t arg1, int64_t arg2)
     case 13:
         clearScreen();
         return 1;
+    case 14:
+        return consoleInUse();
 
     default:
       return -1; 

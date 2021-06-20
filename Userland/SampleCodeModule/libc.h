@@ -66,6 +66,8 @@ void sys_write(unsigned int fd, const char *buffer, unsigned int count);
 
 int sys_read(char *buffer, int limit, int *changed);
 
+char sys_consoleInUse();
+
 void printf(const char *str);
 
 

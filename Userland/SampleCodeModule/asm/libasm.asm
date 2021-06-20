@@ -5,6 +5,8 @@ GLOBAL getCpuLeaf
 GLOBAL getCpuProcessorInfo
 GLOBAL getCpuExtendedFeatures
 GLOBAL divZero
+GLOBAL testRBP
+GLOBAL testRSP
 
 section .text
 

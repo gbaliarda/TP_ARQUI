@@ -5,6 +5,8 @@ GLOBAL sys_printmem
 GLOBAL sys_getDateTime
 GLOBAL sys_clearScreen
 
+GLOBAL sys_consoleInUse
+
 section .text
 
 sys_read:
@@ -33,5 +35,10 @@ sys_getDateTime:
 
 sys_clearScreen:
   mov rax, 13
+  int 80h
+  ret
+
+sys_consoleInUse:
+  mov rax, 14
   int 80h
   ret

@@ -1,8 +1,5 @@
 #include "libc.h"
 
-char bufferLeft[101];
-char bufferRight[101];
-
 void printProcessorInfo(cpuInformation *cpuidData, int maxEaxValue);
 
 void executeCommand(char * buffer) {
@@ -147,13 +144,19 @@ void executeCommand(char * buffer) {
 }
 
 int main() {
-	
+
+	char bufferLeft[101];
+	char bufferRight[101];
+
 	char *buffer;
-	buffer = bufferLeft;
+	if (sys_consoleInUse())
+		buffer = bufferRight;
+	else
+		buffer = bufferLeft;
+	
 	int changed = 1;
 
 	while (1) {
-		
 		if (!changed)
 			printf("> ");
 		else

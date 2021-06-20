@@ -123,3 +123,7 @@ void getDateTime(Time *dayTime) {
 void clearScreen(){
   ncClear();
 }
+
+char consoleInUse() {
+  return getConsoleInUse();
+}

@@ -45,4 +45,6 @@ void getTimeRTC(Time *dayTime);
 
 void clearScreen();
 
+char consoleInUse();
+
 #endif

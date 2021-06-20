@@ -86,13 +86,16 @@ SECTION .text
 	call exceptionDispatcher
 	call dumpRegs
 	popState
-	pop rax ; rip esta arriba del stack 
+	pop rax ; rip esta arriba del stack
 	printReg rax, 14 ; imprime el IP de donde se produjo la exception
-	push rax
-	; call haltcpu ; cortamos la ejecucion del sistema operativo. En este punto, hay que reiniciarlo.
+
 	call rebootConsole
-	call runShells
-	; iretq
+
+	mov rax, 400000h 								; IP del inicio de sampleCodeModule
+	push rax											  ; pusheamos ese IP para retornar a el con iretq
+	mov qword [rsp+24], 10CFD0h 		; pisamos el stack pointer dentro del stack frame de interrupcion con el del inicio de sampleCodeModule
+
+	iretq
 %endmacro
 
 %macro printReg 2
