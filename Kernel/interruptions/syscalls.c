@@ -6,7 +6,12 @@
 
 int mayus = 0;
 int countLeft = 0, countRight = 0;
-Registers *backupRegisters;
+
+Registers b, bAux;
+Registers *backupRegisters = &b;
+Registers *backupAuxRegisters = &bAux;
+
+void loadRegisters(Registers* registers, Registers *from);
 
 int64_t write(uint64_t fd, const char* buf, uint64_t count) {
   switch (fd) {
@@ -61,8 +66,9 @@ int read(char* buf, int limit, int *changed)
         changeConsole();
         return count;
 
+      // F1, guarda el estado de los registros en el momento actual
       case 17:
-        saveState(backupRegisters);
+        loadRegisters(backupRegisters, backupAuxRegisters);
         break;
 
       // shifts izq, der y sus release; y bloq mayus
@@ -89,22 +95,32 @@ int read(char* buf, int limit, int *changed)
   return (count >= 100) ? 100 : count; // Como solo se guardan hasta 100 caracteres en el buffer, se retornan hasta 100
 }
 
-void inforeg(Registers* registers) {
-  registers->rax = backupRegisters->rax;
-	registers->rbx = backupRegisters->rbx;
-	registers->rcx = backupRegisters->rcx;
-	registers->rdx = backupRegisters->rdx;
-	registers->rbp = backupRegisters->rbp;
-	registers->rdi = backupRegisters->rdi;
-	registers->rsi = backupRegisters->rsi;
-	registers->r8 = backupRegisters->r8;
-	registers->r9 = backupRegisters->r9;
-	registers->r10 = backupRegisters->r10;
-	registers->r11 = backupRegisters->r11;
-	registers->r12 = backupRegisters->r12;
-	registers->r13 = backupRegisters->r13;
-	registers->r14 = backupRegisters->r14;
-	registers->r15 = backupRegisters->r15;
+void loadRegisters(Registers* registers, Registers *from) {
+  registers->rax = from->rax;
+	registers->rbx = from->rbx;
+	registers->rcx = from->rcx;
+	registers->rdx = from->rdx;
+	registers->rbp = from->rbp;
+	registers->rdi = from->rdi;
+	registers->rsi = from->rsi;
+	registers->r8 = from->r8;
+	registers->r9 = from->r9;
+	registers->r10 = from->r10;
+	registers->r11 = from->r11;
+	registers->r12 = from->r12;
+	registers->r13 = from->r13;
+	registers->r14 = from->r14;
+	registers->r15 = from->r15;
+}
+
+// Devuelve el ultimo estado guardado de los registros
+void inforeg(Registers *registers) {
+  loadRegisters(registers, backupRegisters);
+}
+
+// Guarda un backup auxiliar, por si la tecla es F1 y necesitamos quedarnoslo
+void saveBackup() {
+  saveState(backupAuxRegisters);
 }
 
 void printmem(uint64_t pointer) {

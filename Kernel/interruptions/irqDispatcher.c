@@ -9,13 +9,6 @@ static void (*p[2])() = {int_20, int_21}; // Arreglo de punteros a funcion
 
 void irqDispatcher(uint64_t irq) {
 	(*p[irq])();
-	/*
-	switch (irq) {
-		case 0:
-			int_20();
-			break;
-	}
-	*/
 	return;
 }
 

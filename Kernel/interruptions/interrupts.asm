@@ -22,7 +22,7 @@ EXTERN irqDispatcher
 EXTERN exceptionDispatcher
 EXTERN runShells
 EXTERN rebootConsole
-
+EXTERN saveBackup
 SECTION .text
 
 
@@ -65,7 +65,13 @@ SECTION .text
 %macro irqHandlerMaster 1
 	pushState
 	cli ; linea agregada para que no se puede interrumpir las interrupciones de hardware. Para atender de a una interrupcion a la vez.
+	
+	mov rax, %1
+	cmp rax, 1
+	jne .continue
+	call saveBackup ; si tenemos una interrupcion de teclado, guardamos una copia de los registros en ese momento, por las dudas que necesitemos almacenarlos
 
+.continue:
 	mov rdi, %1 ; pasaje de parametro
 	call irqDispatcher
 
